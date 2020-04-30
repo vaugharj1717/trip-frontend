@@ -24,8 +24,7 @@ function SelectDestinationBox(props){
         setAddress(value);
         const address = await geocodeByAddress(value)
         const place_id = address[0].place_id;
-        console.log(place_id);
-        dispatch(startCreatingDestination(index, place_id, currentTrip))
+        console.log(address);
     };
 
 
