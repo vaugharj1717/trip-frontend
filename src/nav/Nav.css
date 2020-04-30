@@ -1,0 +1,51 @@
+.nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    width: 100%;
+    height: 50px;
+    background-color: orange;
+    border: 1px solid red;
+}
+
+.nav-left{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 35%;
+    background-color: green;
+}
+
+.nav-right{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 65%;
+    background-color: yellow
+}
+
+.nav-button{
+    width: 100px;
+    background-color: white;
+    text-align: center;
+    border: 1px solid black;
+    cursor: pointer;
+}
+
+.nav-select-trip{
+    position: relative;
+}
+
+.nav-dropdown-pane{
+    position: absolute;
+    top: 22px;
+    width: 100px;
+    background-color: white;
+    left: -1px;
+    
+}
+
+.nav-dropdown-item{
+    padding: 5px 0px;
+    border: 1px solid black;
+}

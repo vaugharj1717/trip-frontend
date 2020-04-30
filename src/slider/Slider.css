@@ -1,0 +1,59 @@
+.slider-root{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 300px;
+    background-color: #aff2fe;
+    margin-top: 25px;
+}
+
+.slider{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 300px;
+    background-color: #a3ff00;
+    margin: 25px 0;
+}
+
+.slider-destination-container{
+    width: 100%;
+    height: 150px;
+    background-color: black;
+}
+
+.slider-destination-box{
+    height: 80px;
+    width: 50%;
+    margin: 0 auto;
+    background-color: maroon;
+}
+
+.slider-destination-connector{
+    position: relative;
+    height: 70px;
+    width: 5%;
+    margin: 0 auto;
+    background-color: gray;
+}
+
+.slider-add-button{
+    position: absolute;
+    width: 35px;
+    height: 35px;
+    border-radius: 25px;
+    top: 20px;
+    left: -10px;
+    background-color: white;
+}
+
+.slider-first{
+    top: -10px;
+}
+
+.slider-last{
+    top: unset;
+    bottom: -10px;
+}

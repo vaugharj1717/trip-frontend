@@ -1,0 +1,7 @@
+.content-pane{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background-color: #aaaaaa;
+    min-height: 600px;
+}
