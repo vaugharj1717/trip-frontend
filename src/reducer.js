@@ -157,6 +157,16 @@ function reducer(state = initialState, action){
                 ...state,
                 isDropdown: false,
             }
+        case Action.SetGoogleToken:
+            return{
+                ...state,
+                googleToken: action.payload,
+            }
+        case Action.EndAutoCompleteSession:
+            return{
+                ...state,
+                googleToken: undefined
+            }
 
         default:
             return state;

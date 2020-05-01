@@ -14,7 +14,8 @@ export const Action = Object.freeze({
     FinishSelectingTrip: "FinishSelectingTrip",
     ToggleEditingTrips: "ToggleEditingTrips",
     DoDropdown: "DoDropdown",
-    StopDropdown: "StopDrodown"
+    StopDropdown: "StopDrodown",
+    SetGoogleToken: "SetGoogleToken"
 });
 
 const host = "http://localhost:3444";
@@ -111,15 +112,20 @@ export function startRegistering(username, password, email){
         .then(checkForErrors)
         .then(response => response.json())
         .then(data => {
-            dispatch(finishRegistering(data.userID, data.username))
+            if(data.ok){
+                dispatch(finishRegistering(username, data.id));
+            }
+            else{
+                console.error("Error registering.")
+            }
         });
     }
 }
 
-export function finishRegistering(userID, username){
+export function finishRegistering(username, id){
     return {
         type: Action.FinishRegistering,
-        payload: {userID, username}
+        payload: {id, username}
     }
 }
 
@@ -290,5 +296,45 @@ export function doDropdown(){
 export function stopDropdown(){
     return {
         type: Action.StopDropdown
+    }
+}
+
+export function startAutoCompleteSession(userid, text){
+    return dispatch =>{
+        fetch(`${host}/sessiontoken/${userid}`)
+        .then(checkForErrors)
+        .then(result => result.json())
+        .then(data => {
+            if(data.ok){
+                const token = data.token
+                console.log(token);
+                dispatch({
+                    type: Action.SetGoogleToken,
+                    payload: token,
+                })
+
+                
+            }
+            else{console.error("Error getting session token")}
+        })
+    }
+}
+
+export function endAutoCompleteSession(){
+    return {
+        type: Action.EndAutoCompleteSession
+    }
+}
+
+export function startAutoCompleting(text, token){
+    return dispatch => {
+        
+    }
+}
+
+export function finishAutoCompleting(data, token){
+    return{
+        type: Action.FinishAutoCompleting,
+        payload: {data, token}
     }
 }

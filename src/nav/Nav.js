@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import './Nav.css';
 import {useSelector, useDispatch} from 'react-redux';
-import {goToRegistration, startLoggingOut, goToLogin, startSelectingTrip, startCreatingTrip, doDropdown, stopDropdown} from '../actions'
+import {goToRegistration, startLoggingOut, goToLogin, startSelectingTrip, startCreatingTrip, doDropdown, stopDropdown, startAutoCompleteSession} from '../actions'
 
 function Nav(props){
 
@@ -40,6 +40,10 @@ function Nav(props){
         dispatch(goToRegistration());
     }
 
+    function beginAutoCompleteSession(){
+        dispatch(startAutoCompleteSession(user.id))
+    }
+
     if(user.isLoggedIn){
         return(
             <div className = "nav">
@@ -47,6 +51,7 @@ function Nav(props){
                     <div className = "nav-logo">
                         Trip Maker
                     </div>
+                    <button onClick={beginAutoCompleteSession}>Test</button>
                 </div>
                 <div className = "nav-right">
                     <div className = "nav-new-trip nav-button" onClick={onCreateTrip}>
