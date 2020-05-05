@@ -24,6 +24,10 @@ const initialState = {
     //Place info
     places: [],
 
+    //Google API
+    googleToken: null,
+    gettingGoogleToken: false,
+
 };
 
 function reducer(state = initialState, action){
@@ -161,11 +165,17 @@ function reducer(state = initialState, action){
             return{
                 ...state,
                 googleToken: action.payload,
+                gettingGoogleToken: false,
             }
         case Action.EndAutoCompleteSession:
             return{
                 ...state,
-                googleToken: undefined
+                googleToken: null,
+            }
+        case Action.SetGettingGoogleToken:
+            return{
+                ...state,
+                gettingGoogleToken: action.payload
             }
 
         default:

@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import './SelectDestinationBox.css';
-import {startCreatingDestination} from '../actions.js';
+import {startCreatingDestination, Action} from '../actions.js';
 import {useSelector, useDispatch} from 'react-redux';
-import {} from '../actions'
+import {startAutoCompleteSession} from '../actions'
 import PlacesAutocomplete, {geocodeByAddress} from 'react-places-autocomplete';
 
 
@@ -16,6 +16,10 @@ function SelectDestinationBox(props){
     const isFirst = props.isFirst;
     const index = props.index;
     const currentTrip = useSelector(state => state.currentTrip);
+    const googleToken = useSelector(state => state.googleToken);
+    const user = useSelector(state => state.user);
+    const gettingToken = useSelector(state => state.gettingGoogleToken);
+    const [text, setText] = useState("");
     const [address, setAddress] = useState("");
     const dispatch = useDispatch();
 
@@ -27,36 +31,35 @@ function SelectDestinationBox(props){
         console.log(address);
     };
 
+    function handleSearch(text){
+        setText(text);
+        console.log(`Token: ${googleToken}, GettingToken: ${gettingToken}`);
+        if(googleToken === null && gettingToken === false){
+            dispatch(startAutoCompleteSession(user.id));
+        }
+        //set timeout for token refresh
+        const tokenSnapshot = googleToken;
+        setTimeout(() => {
+            if(tokenSnapshot !== null && tokenSnapshot === googleToken){
+                dispatch(startAutoCompleteSession(user.id));
+            }
+        }, 1000 * 60 * 2);
+        //debouce and query google API
+    }
+
+    function handleCreate(){
+
+    }
+
 
     if (true) return(
-        <div className="select-destination-box" onClick={(e)=>e.stopPropagation()}>
+        <div value={text}className="select-destination-box" onClick={(e)=>e.stopPropagation()}>
             <div className="stem stem-first">
 
             </div>
             <div className="box box-first">
-                <PlacesAutocomplete
-                    value={address}
-                    onChange={setAddress}
-                    onSelect={handleSelect}
-                    searchOptions={searchOptions}
-                >
-                    {({getInputProps, suggestions, getSuggestionItemProps, loading}) => (
-                        <div>
-                            <input className="place-searcher" {...getInputProps({placeholder: "Type address"})}/>
-                            <div>
-                                {loading ? <div>Loading...</div> : null}
-                                {suggestions.map((suggestion) => {
-                                    const style = {
-                                        backgroundColor: suggestion.active ? "#ffb4f9" : "#ffffff",
-                                    }
-                                    return <div className="suggestion" {...getSuggestionItemProps(suggestion, {style})}>{suggestion.description}</div>
-                                })}
-                            </div>
-                        </div>
-                    )}
-                </PlacesAutocomplete>
-
-                
+                <input type="text" placeholder="Type destination" onChange={(e) => handleSearch(e.target.text)}></input>
+                <button onClick={handleCreate}>Select</button>
             </div>
         </div>    
     )

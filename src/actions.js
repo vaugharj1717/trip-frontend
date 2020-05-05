@@ -15,7 +15,8 @@ export const Action = Object.freeze({
     ToggleEditingTrips: "ToggleEditingTrips",
     DoDropdown: "DoDropdown",
     StopDropdown: "StopDrodown",
-    SetGoogleToken: "SetGoogleToken"
+    SetGoogleToken: "SetGoogleToken",
+    SetGettingGoogleToken: "SetGettingGoogleToken",
 });
 
 const host = "http://localhost:3444";
@@ -299,8 +300,12 @@ export function stopDropdown(){
     }
 }
 
-export function startAutoCompleteSession(userid, text){
+export function startAutoCompleteSession(userid){
     return dispatch =>{
+        dispatch({
+            type: Action.SetGettingGoogleToken,
+            payload: true,
+        })
         fetch(`${host}/sessiontoken/${userid}`)
         .then(checkForErrors)
         .then(result => result.json())
@@ -311,11 +316,15 @@ export function startAutoCompleteSession(userid, text){
                 dispatch({
                     type: Action.SetGoogleToken,
                     payload: token,
-                })
-
-                
+                })                
             }
-            else{console.error("Error getting session token")}
+            else{
+                dispatch({
+                    type: Action.SetGettingGoogleToken,
+                    payload: false,
+                });
+                console.error("Error getting session token")
+            }
         })
     }
 }
