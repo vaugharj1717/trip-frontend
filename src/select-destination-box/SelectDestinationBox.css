@@ -32,3 +32,28 @@
     margin-left: 5px;
     width: 200px;
 }
+
+.autocomplete-textbox{
+    position: relative;
+}
+
+.autocomplete-guess-container{
+    position: absolute;
+    width: 100px;
+    top: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+}
+
+.autocomplete-guess{
+    width: 100px;
+    border: 1px solid black;
+    text-align: center;
+    word-wrap: wrap;
+    min-height: 25px;
+    background-color: white;
+}
+
+

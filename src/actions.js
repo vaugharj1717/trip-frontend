@@ -17,9 +17,13 @@ export const Action = Object.freeze({
     StopDropdown: "StopDrodown",
     SetGoogleToken: "SetGoogleToken",
     SetGettingGoogleToken: "SetGettingGoogleToken",
+    FinishAutoCompleting: "FinishAutoCompleting",
+    ClearGuesses: "ClearGuesses"
 });
 
 const host = "http://localhost:3444";
+const apikey = 'AIzaSyBmWLOxG5pppuLMUMnrr62pTsSzhTsxxl8';
+const autocompleteHost = `https://maps.googleapis.com/maps/api/place/autocomplete/json?key=${apikey}&types=(cities)&components=country:us`;
 
 function checkForErrors(response){
     if(!response.ok){
@@ -42,7 +46,6 @@ export function startLoggingIn(username, password){
         .then(response => response.json())
         .then(data => {
             if(data.ok && data.success){
-                console.log("Login request complete:" + data.userid);
                 dispatch(finishLoggingIn(data.userid, data.username, data.trips))
             }
         })
@@ -133,7 +136,6 @@ export function finishRegistering(username, id){
 
 export function startCreatingTrip(userid){
     return dispatch => {
-        console.log(userid);
         const options = {
             method: 'POST',
             headers: {
@@ -146,7 +148,6 @@ export function startCreatingTrip(userid){
         .then(response => response.json())
         .then(data => {
             if(data.ok){
-                console.log("new trip id:" + data.resultId);
                 dispatch(finishCreatingTrip(data.id));
             }
         })
@@ -337,13 +338,37 @@ export function endAutoCompleteSession(){
 
 export function startAutoCompleting(text, token){
     return dispatch => {
-        
+        const options = {
+            method: "POST",
+            headers: {
+                "Content-Type" : "application/json"
+            },
+            body: JSON.stringify({text, token})
+        }
+        fetch(`${host}/autocomplete`, options)
+        .then(checkForErrors)
+        .then(response => response.json())
+        .then(data => {
+            if(data.ok){
+                console.log(data.guesses);
+                dispatch(finishAutoCompleting(data.guesses))
+            }
+            else{
+                console.err("Could not autocomplete.")
+            }
+        })
     }
 }
 
-export function finishAutoCompleting(data, token){
+export function finishAutoCompleting(guesses){
     return{
         type: Action.FinishAutoCompleting,
-        payload: {data, token}
+        payload: guesses,
+    }
+}
+
+export function clearGuesses(){
+    return{
+        type: Action.ClearGuesses,
     }
 }

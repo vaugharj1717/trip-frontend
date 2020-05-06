@@ -7,7 +7,6 @@ import {actions} from '../actions.js';
 
 function ContentPane(props){
     const destinations = useSelector(state => state.destinations);
-    console.log(JSON.stringify(destinations));
     const currentDestination = useSelector(state => state.currentDestination);
 
     return(

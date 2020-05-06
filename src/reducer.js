@@ -10,7 +10,7 @@ const initialState = {
 
 
     //User info
-    user: {isLoggedIn: true},
+    user: {isLoggedIn: false},
 
     //Trip info
     tripLoading: false,
@@ -18,7 +18,7 @@ const initialState = {
     currentTrip: {},
 
     //Destination info
-    destinations: [{id: 1, name: "San Diego"}, {id: 2, name: "New York City"}, {id: 3, name: "Zion National Park"}],
+    destinations: [],
     currentDestination: {},
     
     //Place info
@@ -27,7 +27,7 @@ const initialState = {
     //Google API
     googleToken: null,
     gettingGoogleToken: false,
-
+    guesses: [],
 };
 
 function reducer(state = initialState, action){
@@ -162,20 +162,26 @@ function reducer(state = initialState, action){
                 isDropdown: false,
             }
         case Action.SetGoogleToken:
+            console.log("Setting google token: " + action.payload);
             return{
                 ...state,
                 googleToken: action.payload,
                 gettingGoogleToken: false,
             }
-        case Action.EndAutoCompleteSession:
-            return{
-                ...state,
-                googleToken: null,
-            }
         case Action.SetGettingGoogleToken:
             return{
                 ...state,
                 gettingGoogleToken: action.payload
+            }
+        case Action.FinishAutoCompleting:
+            return{
+                ...state,
+                guesses: action.payload,
+            }
+        case Action.ClearGuesses:
+            return{
+                ...state,
+                guesses: [],
             }
 
         default:

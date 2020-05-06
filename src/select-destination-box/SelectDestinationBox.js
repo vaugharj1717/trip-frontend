@@ -1,16 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import './SelectDestinationBox.css';
-import {startCreatingDestination, Action} from '../actions.js';
 import {useSelector, useDispatch} from 'react-redux';
-import {startAutoCompleteSession} from '../actions'
-import PlacesAutocomplete, {geocodeByAddress} from 'react-places-autocomplete';
+import {startAutoCompleteSession, startAutoCompleting, clearGuesses} from '../actions.js'
+import {debounce} from '../helpers.js';
 
 
 
-const searchOptions = {
-    type: ['(cites)'],
-    fields: ["place_id", "name"],
-}
+let handleSearch;
 
 function SelectDestinationBox(props){
     const isFirst = props.isFirst;
@@ -19,33 +15,36 @@ function SelectDestinationBox(props){
     const googleToken = useSelector(state => state.googleToken);
     const user = useSelector(state => state.user);
     const gettingToken = useSelector(state => state.gettingGoogleToken);
+    const guesses = useSelector(state => state.guesses);
     const [text, setText] = useState("");
     const [address, setAddress] = useState("");
     const dispatch = useDispatch();
+    console.log(`Token: ${googleToken}, GettingToken: ${gettingToken}`);
 
 
     const handleSelect = async value => {
-        setAddress(value);
-        const address = await geocodeByAddress(value)
-        const place_id = address[0].place_id;
-        console.log(address);
+       
     };
 
-    function handleSearch(text){
-        setText(text);
-        console.log(`Token: ${googleToken}, GettingToken: ${gettingToken}`);
-        if(googleToken === null && gettingToken === false){
-            dispatch(startAutoCompleteSession(user.id));
-        }
-        //set timeout for token refresh
-        const tokenSnapshot = googleToken;
-        setTimeout(() => {
-            if(tokenSnapshot !== null && tokenSnapshot === googleToken){
+    useEffect(() => {
+        const doAutocomplete = debounce((text, googleToken) => {
+            if(text.length >= 3 && googleToken !== null){
+                dispatch(startAutoCompleting(text, googleToken));
+            }
+            else{
+                dispatch(clearGuesses());
+            }
+        }, 1000, false);
+
+        handleSearch = function handleSearch(text, googleToken){
+            setText(text);
+            if(googleToken === null && gettingToken === false){
                 dispatch(startAutoCompleteSession(user.id));
             }
-        }, 1000 * 60 * 2);
-        //debouce and query google API
-    }
+            doAutocomplete(text, googleToken);
+        }
+    }, []);
+    
 
     function handleCreate(){
 
@@ -58,7 +57,13 @@ function SelectDestinationBox(props){
 
             </div>
             <div className="box box-first">
-                <input type="text" placeholder="Type destination" onChange={(e) => handleSearch(e.target.text)}></input>
+                <input className="autocomplete-textbox" type="text" placeholder="Type destination" onChange={(e) => handleSearch(e.target.value, googleToken)}>
+                </input>
+                <div className="autocomplete-guess-container">
+                    {guesses.map(guess => 
+                        <div key={guess.id} className="autocomplete-guess" onClick={()=>handleSelect(guess.id, guess.name)}>{guess.name}</div>
+                    )}
+                    </div>
                 <button onClick={handleCreate}>Select</button>
             </div>
         </div>    
