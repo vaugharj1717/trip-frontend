@@ -4,25 +4,28 @@ import DestinationBox from '../destination-box/DestinationBox.js';
 import SliderNameplate from '../slider-nameplate/SliderNameplate.js';
 import './Slider.css';
 import {useSelector, useDispatch} from 'react-redux';
-import {startAddingDestination, startSelectingDestination, startDeletingDestination,
-showDestinationSelect, hideDestinationSelect} from '../actions.js';
+import {setShowDestinationSelector, hideDestinationSelect} from '../actions.js';
+
+
 
 function Slider(props){
     const dispatch = useDispatch();
     const destinations = props.destinations;
+    destinations.sort((a, b) => a.dindex > b.dindex ? 1 : -1);
+    console.log(destinations);
     const [selectionIndex, setSelectionIndex] = useState(-1);
-    const [showDestinationSelector, setShowDestinationSelector] = useState(false);
-
+    const showDestinationSelector = useSelector(state => state.showDestinationSelector);
     const currentTrip = useSelector(state => state.currentTrip);
 
     function onAddDestinationSelect(i){
         if(i === selectionIndex){
-            setShowDestinationSelector(false);
             setSelectionIndex(-1);
+            dispatch(setShowDestinationSelector(false));
         }
         else{
             setSelectionIndex(i);
-            setShowDestinationSelector(true);
+            dispatch(setShowDestinationSelector(true));
+            
         }
     }
 
@@ -32,17 +35,21 @@ function Slider(props){
 
     return(
         <div className="slider-root">
+            
         {currentTrip && currentTrip.id &&
             <SliderNameplate trip={currentTrip}/>
         }
+        
             <div className="slider">
+            {currentTrip && currentTrip.id &&
                 <div className="slider-destination-connector">
                     <div className="slider-add-button slider-first" onClick={() => onAddDestinationSelect(0)}>
                     {0 === selectionIndex && showDestinationSelector &&
-                        <SelectDestinationBox isFirst={true}/>
+                        <SelectDestinationBox isFirst={true} index={0}/>
                     }
                     </div>
                 </div>
+            }
                 {destinations.map((d, i) => {
                     return(
                         <div key={d.id} className="slider-destination-container">

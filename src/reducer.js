@@ -7,6 +7,7 @@ const initialState = {
     atLogin: false,
     isDropdown: false,
     isEditingTrip: false,
+    showDestinationSelector: false,
 
 
     //User info
@@ -19,12 +20,15 @@ const initialState = {
 
     //Destination info
     destinations: [],
-    currentDestination: {},
+    currentDestination: {},    //pertains to observing already created destinations
+    selectedDestination: null, //pertains to google searching
     
     //Place info
     places: [],
 
     //Google API
+    google: null,
+    mapLoaded: false,
     googleToken: null,
     gettingGoogleToken: false,
     guesses: [],
@@ -47,6 +51,8 @@ function reducer(state = initialState, action){
                 trips: action.payload.trips,
                 destinations: [],
                 currentTrip: {},
+                showDestinationSelector: false,
+                guesses: [],
             }
         
         case Action.FinishLoggingOut:
@@ -78,6 +84,8 @@ function reducer(state = initialState, action){
                 currentTrip: {},
                 atRegistration: false,
                 destinations: [],
+                showDestinationSelector: false,
+                guesses: [],
             }
         
 
@@ -88,10 +96,11 @@ function reducer(state = initialState, action){
                 trips: [...state.trips, {id: action.payload, name: "New Trip"}],
                 destinations: [],
                 isEditingTrip: true,
+                showDestinationSelector: false,
+                guesses: []
             }
         
-        
-
+            //DELETE?
         case Action.ShowDestinationSelect:
             return{
                 ...state,
@@ -99,21 +108,11 @@ function reducer(state = initialState, action){
                 destinationSelectIndex: action.payload
             }
 
+            //DELETE?
         case Action.HideDestinationSelect:
             return{
                 ...state,
                 atDestinationSelect: false
-            }
-        
-        case Action.FinishCreatingDestination:
-            return{
-                ...state,
-                destinations: state.destinations.reduce((totalArr, currVal, i) => {
-                    if(action.payload.index === i){
-                        totalArr.push(action.payload.newDestination);
-                    }
-                    totalArr.push(currVal);
-                }, [])
             }
 
         case Action.FinishEditingTrip:
@@ -133,7 +132,8 @@ function reducer(state = initialState, action){
                 return{
                     ...state,
                     currentTrip: {},
-                    trips: state.trips.filter(trip => trip.id !== action.payload)
+                    trips: state.trips.filter(trip => trip.id !== action.payload),
+                    destinations: [],
                 }
 
         case Action.FinishSelectingTrip:
@@ -141,7 +141,9 @@ function reducer(state = initialState, action){
                 ...state,
                 isEditingTrip: false,
                 currentTrip: action.payload.trip,
-                destinations: action.payload.destinations
+                destinations: action.payload.destinations,
+                selectedDestination: null,
+                currentDestination: {},
             }
 
         case Action.ToggleEditingTrips:
@@ -162,7 +164,6 @@ function reducer(state = initialState, action){
                 isDropdown: false,
             }
         case Action.SetGoogleToken:
-            console.log("Setting google token: " + action.payload);
             return{
                 ...state,
                 googleToken: action.payload,
@@ -183,6 +184,65 @@ function reducer(state = initialState, action){
                 ...state,
                 guesses: [],
             }
+        case Action.SelectDestination:
+            return{
+                ...state,
+                selectedDestination: action.payload
+            }
+        case Action.UnselectDestination:
+            return{
+                ...state,
+                selectedDestination: null,
+            };
+
+        case Action.FinishCreatingDestination:
+            const newDestination = {id: action.payload.id, url: action.payload.url, fetchphotourl: action.payload.fetchphotourl, dindex: action.payload.dindex, tripid: action.payload.tripid, placeid: action.payload.placeid, name: action.payload.name, dur: action.payload.durdist2.dur, dist: action.payload.durdist2.dist};
+            console.log("new index: " + action.payload.dindex);
+            return{
+                ...state,
+                destinations: [...state.destinations.map(d => {
+                    console.log(d.dindex);
+                    //bump up destinations one index that are after new one
+                    if(d.dindex >= action.payload.dindex){
+                        return {...d, dindex: action.payload.dindex + 1}
+                    }
+                    //update duration and distance of destination before new one
+                    else if(d.dindex === action.payload.dindex - 1){
+                        return {...d, dur: action.payload.durdist1.dur, dist: action.payload.durdist1.dist}
+                    }
+                    //otherwise do nothing
+                    else{
+                        return d;
+                    }
+                }), newDestination],
+                currentDestination: newDestination,
+                showDestinationSelector: false,
+                guesses: [],
+            };
+
+        case Action.FinishDeletingDestination:
+            const filteredDestinations = state.destinations.filter(d => d.id !== action.payload);
+            const newDestinations = filteredDestinations.map(d => {
+                if(d.index > action.payload) return {...d, index: d.index - 1}
+                else return d;
+            })
+            return{
+                ...state,
+                destinations: newDestinations,
+            };
+
+        case Action.SetShowDestinationSelector:
+            return{
+                ...state,
+                showDestinationSelector: action.payload,
+                guesses: [],
+            };
+
+        
+
+        
+        
+
 
         default:
             return state;

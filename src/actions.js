@@ -18,12 +18,16 @@ export const Action = Object.freeze({
     SetGoogleToken: "SetGoogleToken",
     SetGettingGoogleToken: "SetGettingGoogleToken",
     FinishAutoCompleting: "FinishAutoCompleting",
-    ClearGuesses: "ClearGuesses"
+    ClearGuesses: "ClearGuesses",
+    SelectDestination: "SelectDestination",
+    UnselectDestination: "UnselectDestination",
+    LoadGoogleAPI: "LoadGoogleAPI",
+    FinishCreatingDestination: "FinishCreatingDestination",
+    FinishDeletingDestination: "FinishDeletingDestination",
+    SetShowDestinationSelector: "SetShowDestinationSelector",
 });
 
 const host = "http://localhost:3444";
-const apikey = 'AIzaSyBmWLOxG5pppuLMUMnrr62pTsSzhTsxxl8';
-const autocompleteHost = `https://maps.googleapis.com/maps/api/place/autocomplete/json?key=${apikey}&types=(cities)&components=country:us`;
 
 function checkForErrors(response){
     if(!response.ok){
@@ -175,33 +179,6 @@ export function finishCreatingTrip(id){
     }
 }
 
-export function startCreatingDestination(index, id, currentTrip){
-    return dispatch =>{
-        const currentTripID = currentTrip.id;
-        const options = {
-            method: 'POST',
-            headers: {
-                'Content-Type' : 'application/json'
-            },
-            body: JSON.stringify({id, currentTripID, index})
-        }
-
-        fetch(`${host}/${currentTrip.id}/destinations`, options)
-        .then(checkForErrors)
-        .then(response => response.json())
-        .then(data => {
-            dispatch(finishCreatingDestination(index, data.newDestination));
-        });
-    }
-}
-
-export function finishCreatingDestination(index, newDestination){
-    return{
-        type: Action.FinishCreatingDestination,
-        payload: {index, newDestination}
-    }
-}
-
 export function startEditingTrip(tripid, newName){
     return dispatch => {
         const options = {
@@ -313,7 +290,6 @@ export function startAutoCompleteSession(userid){
         .then(data => {
             if(data.ok){
                 const token = data.token
-                console.log(token);
                 dispatch({
                     type: Action.SetGoogleToken,
                     payload: token,
@@ -350,7 +326,6 @@ export function startAutoCompleting(text, token){
         .then(response => response.json())
         .then(data => {
             if(data.ok){
-                console.log(data.guesses);
                 dispatch(finishAutoCompleting(data.guesses))
             }
             else{
@@ -372,3 +347,86 @@ export function clearGuesses(){
         type: Action.ClearGuesses,
     }
 }
+
+export function selectDestination(id, name){
+    return{
+        type: Action.SelectDestination,
+        payload: {id, name}
+    }
+}
+
+export function unselectDestination(){
+    return{
+        type: Action.UnselectDestination
+    }
+};
+
+export function createDestination(index, token, tripid, placeid, name){
+    return dispatch => {
+        const newToken = token;
+        dispatch({type: Action.SetGoogleToken, payload: null});
+        const options = {
+            method: "POST",
+            headers:{
+                "Content-Type" : "application/json"
+            },
+            body: JSON.stringify({index, name, token: newToken, placeid}),
+        }
+        fetch(`${host}/trip/${tripid}/destination`, options)
+        .then(checkForErrors)
+        .then(result => result.json())
+        .then(data => {
+            if(data.ok){
+                dispatch(finishCreatingDestination(data.id, data.url, data.fetchphotourl, index, tripid, placeid, name, data.durdist1, data.durdist2));
+            }
+            else{
+                console.err("Error adding destination");
+            }
+        });
+    };
+};
+
+export function finishCreatingDestination(id, url, fetchphotourl, index, tripid, placeid, name, durdist1, durdist2){
+    return{
+        type: Action.FinishCreatingDestination,
+        payload: {id, url, fetchphotourl, dindex: index, tripid, placeid, name, durdist1, durdist2}
+    }
+}
+
+export function startDeletingDestination(id){
+    return dispatch => {
+        const options = {
+            method: "DELETE",
+            headers: {
+                "Content-Type" : "application/json"
+            }
+        }
+        fetch(`${host}/trip/destination/${id}`, options)
+        .then(checkForErrors)
+        .then(response => response.json())
+        .then(data => {
+            if(data.ok){
+                dispatch(finishDeletingDestination(id));
+            }
+            else{
+                console.error("Could not delete destination");
+            }
+        })
+        .catch(err => console.error(err));
+    }
+}
+
+export function finishDeletingDestination(id){
+    return{
+        type: Action.FinishDeletingDestination,
+        payload: id,
+    }
+}
+
+export function setShowDestinationSelector(state){
+    return{
+        type: Action.SetShowDestinationSelector,
+        payload: state
+    }
+}
+
