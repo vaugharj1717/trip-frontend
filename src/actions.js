@@ -7,7 +7,6 @@ export const Action = Object.freeze({
     GoToMainPage: "GoToMainPage",
     ShowDestinationSelect: "ShowDestinationSelect",
     HideDestinationSelect: "HideDestinationSelect",
-    FinishCreatingDestination: "FinishCreatingDestination",
     GoToLogin: "GoToLogin",
     FinishEditingTrip: "FinishEditingTrip",
     FinishDeletingTrip: "FinishDeletingTrip",
@@ -393,20 +392,22 @@ export function finishCreatingDestination(id, url, fetchphotourl, index, tripid,
     }
 }
 
-export function startDeletingDestination(id){
+export function startDeletingDestination(id, dindex, tripid){
     return dispatch => {
         const options = {
             method: "DELETE",
             headers: {
                 "Content-Type" : "application/json"
-            }
+            },
+            body: JSON.stringify({dindex})
         }
-        fetch(`${host}/trip/destination/${id}`, options)
+        fetch(`${host}/trip/${tripid}/destination/${id}`, options)
         .then(checkForErrors)
         .then(response => response.json())
         .then(data => {
             if(data.ok){
-                dispatch(finishDeletingDestination(id));
+                console.log("Server has responded to trip delete");
+                dispatch(finishDeletingDestination(id, dindex, data.durdist));
             }
             else{
                 console.error("Could not delete destination");
@@ -416,10 +417,11 @@ export function startDeletingDestination(id){
     }
 }
 
-export function finishDeletingDestination(id){
+export function finishDeletingDestination(id, dindex, durdist){
     return{
         type: Action.FinishDeletingDestination,
-        payload: id,
+        payload: {id, dindex, durdist},
+
     }
 }
 

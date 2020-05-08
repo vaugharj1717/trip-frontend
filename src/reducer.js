@@ -204,7 +204,7 @@ function reducer(state = initialState, action){
                     console.log(d.dindex);
                     //bump up destinations one index that are after new one
                     if(d.dindex >= action.payload.dindex){
-                        return {...d, dindex: action.payload.dindex + 1}
+                        return {...d, dindex: d.dindex + 1}
                     }
                     //update duration and distance of destination before new one
                     else if(d.dindex === action.payload.dindex - 1){
@@ -221,10 +221,10 @@ function reducer(state = initialState, action){
             };
 
         case Action.FinishDeletingDestination:
-            const filteredDestinations = state.destinations.filter(d => d.id !== action.payload);
+            const filteredDestinations = state.destinations.filter(d => d.id !== action.payload.id);
             const newDestinations = filteredDestinations.map(d => {
-                if(d.index > action.payload) return {...d, index: d.index - 1}
-                else return d;
+                if(d.dindex > action.payload.dindex) return {...d, dindex: d.dindex - 1}
+                else if(d.dindex == action.payload.dindex - 1) return {...d, dur: action.payload.durdist.dur, dist: action.payload.durdist.dist}
             })
             return{
                 ...state,
