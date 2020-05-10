@@ -1,6 +1,35 @@
 .destination-box{
-    height: 80px;
-    width: 50%;
+    position: relative;
+    height: 120px;
+    width: 80%;
     margin: 0 auto;
-    background-color: maroon;
+    background-color: #239e61;
+    border-radius: 20px;
+    box-shadow: 0px 6px 20px 8px #000000;
+}
+
+
+.destination-box-name{
+    position: absolute;
+    color: white;
+    text-align: center;
+    width: 80%;
+    word-wrap: wrap;
+    top: 15%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+}
+
+.destination-box::after{
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 97%;
+    height: 93%;
+    transform: translate(-50%, -50%);
+    border-radius: 20px;
+    border: 2px solid white;
+    pointer-events: none;
 }

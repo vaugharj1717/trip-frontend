@@ -1,21 +1,21 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 import './Display.css';
 
 function Display(props){
-    const google = useSelector(state => state.google);
-    const mapLoaded = useSelector(state => state.mapLoaded);
-
-    useEffect(() => {
-        let map;
-        if(mapLoaded){
-            console.log(mapLoaded);
-            map = new google.maps.Map(document.getElementById("display"), {center: {lat: -34.397, lng: 150.644}, zoom: 8});
-        }
-    }, [mapLoaded]);
+    const destination = props.currentDestination;
+    let isPic;
+    if(destination !== null) isPic = destination.fetchphotourl.match("nophoto") === null;
+    else isPic = false;
+    
+    console.log(isPic);
+    
 
     return(
         <div id="display" className="display">
+            {destination !== null && isPic &&
+            <img src={destination.fetchphotourl}></img>
+            }
         </div>
     )
 }

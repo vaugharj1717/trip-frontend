@@ -7,6 +7,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {setShowDestinationSelector, hideDestinationSelect} from '../actions.js';
 
 
+const streetTitles = ["St", "Blvd", "Ave", "Ln", "Way", "Ct"]
 
 function Slider(props){
     const dispatch = useDispatch();
@@ -18,7 +19,7 @@ function Slider(props){
     const currentTrip = useSelector(state => state.currentTrip);
 
     function onAddDestinationSelect(i){
-        if(i === selectionIndex){
+        if(i === selectionIndex && showDestinationSelector){
             setSelectionIndex(-1);
             dispatch(setShowDestinationSelector(false));
         }
@@ -42,11 +43,13 @@ function Slider(props){
         
             <div className="slider">
             {currentTrip && currentTrip.id &&
-                <div className="slider-destination-connector">
+                <div className="slider-destination-connector-first">
                     <div className="slider-add-button slider-first" onClick={() => onAddDestinationSelect(0)}>
                     {0 === selectionIndex && showDestinationSelector &&
                         <SelectDestinationBox isFirst={true} index={0}/>
                     }
+                    <div className = "slider-add-button-text">New Destination</div>
+                    <div className = "slider-add-button-street">{streetTitles[0]}</div>
                     </div>
                 </div>
             }
@@ -60,6 +63,8 @@ function Slider(props){
                                         {i + 1 === selectionIndex && showDestinationSelector &&
                                             <SelectDestinationBox index={i+1} isFirst={false}/>
                                         }
+                                        <div className = "slider-add-button-text">New Destination</div>
+                                        <div className = "slider-add-button-street">{streetTitles[(i+1) % streetTitles.length]}</div>
                                     </div>
                                 </div>
                             }
@@ -69,6 +74,8 @@ function Slider(props){
                                         {i + 1 === selectionIndex && showDestinationSelector &&
                                             <SelectDestinationBox index={i+1} isFirst={false}/>
                                         }
+                                        <div className = "slider-add-button-text">New Destination</div>
+                                        <div className = "slider-add-button-street">{streetTitles[(i+ 1) % streetTitles.length]}</div>
                                     </div>
                                 </div>
                             }

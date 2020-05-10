@@ -3,9 +3,8 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    width: 300px;
-    background-color: #aff2fe;
-    margin-top: 25px;
+    width: 33%;
+    margin-top: 70px;
 }
 
 .slider{
@@ -13,40 +12,83 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    width: 300px;
-    background-color: #a3ff00;
-    margin: 25px 0;
+    width: 90%;
+    margin: 55px 0;
 }
 
 .slider-destination-container{
     width: 100%;
     height: 150px;
-    background-color: black;
+    margin-bottom: 90px;
 }
 
-.slider-destination-box{
-    height: 80px;
-    width: 50%;
-    margin: 0 auto;
-    background-color: maroon;
-}
 
 .slider-destination-connector{
     position: relative;
-    height: 70px;
+    height: 120px;
     width: 5%;
     margin: 0 auto;
-    background-color: gray;
+    background-color: rgb(80, 71, 71);
+    border-left: 1px solid rgba(0, 0, 0, .4);
+    border-right: 1px solid rgba(0, 0, 0, .4);
+}
+
+.slider-destination-connector-first{
+    position: relative;
+    height: 50px;
+    width: 5%;
+    margin: 0 auto;
+    background-color: rgb(80, 71, 71);
+    border-left: 1px solid rgba(0, 0, 0, .4);
+    border-right: 1px solid rgba(0, 0, 0, .4);
 }
 
 .slider-add-button{
     position: absolute;
-    width: 35px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 280px;
     height: 35px;
-    border-radius: 25px;
-    top: 20px;
-    left: -10px;
-    background-color: white;
+    background-color: green;
+    border-radius: 5px;
+    box-shadow: 0px 2px 10px 2px #000000;
+    cursor: pointer;
+    color: white;
+}
+
+.slider-add-button:after{
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid white;
+    width: 97%;
+    height: 80%;
+    border-radius: 5px;
+}
+
+.slider-add-button:hover{
+    box-shadow: 0px 0px 5px 2px #ffffff;
+}
+
+.slider-add-button-text{
+    position: absolute;
+    color: white;
+    font-size: 20px;
+    left: 30px;
+    top: 50%;
+    transform: translateY(-55%);
+}
+
+.slider-add-button-street{
+    position: absolute;
+    color: white;
+    font-size: 16px;
+    right: 20px;
+    top: 16%;
+    text-align: right;
 }
 
 .slider-first{

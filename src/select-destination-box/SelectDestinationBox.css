@@ -1,25 +1,42 @@
 .select-destination-box{
-    position: absolute;
-    top: -170px;
-    left: 18px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-end;
-    width: 600px;
-    height: 200px;
+    position: relative;
+    height: 100%;
 }
 
 .stem{
-    height: 25px;
-    width: 65%;
-    background-color: yellow;
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 10px;
+    width: 70px;
+    background-color: black;
 }
 
 
 .box{
-    height: 100%;
-    width: 35%;
-    background-color: yellow;
+    position: absolute;
+    left: 100%;
+    height: 100px;
+    width: 200px;
+    transform: translateY(-50%);
+    z-index: 2;
+    border-radius: 5px;
+    background-color: #239e61;
+    box-shadow: 0px 6px 10px 4px #000000;
+}
+
+.box::after{
+    pointer-events: none;
+    position: absolute;
+    content: "";
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 95%;
+    height: 95%;
+    border: 2px solid white;
+    border-radius: 5px;
 }
 
 .place-searcher{
@@ -35,11 +52,19 @@
 
 .autocomplete-textbox{
     position: relative;
+    top: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 185px;
+    border-radius: 2px;
+    text-align: center;
 }
 
 .autocomplete-guess-container{
     position: absolute;
-    width: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 190px;
     top: 25px;
     display: flex;
     flex-direction: column;
@@ -48,12 +73,21 @@
 }
 
 .autocomplete-guess{
-    width: 100px;
+    width: 100%;
+    color: black;
     border: 1px solid black;
     text-align: center;
     word-wrap: wrap;
     min-height: 25px;
+    padding: 5px 0;
     background-color: white;
+}
+
+.create-button{
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 

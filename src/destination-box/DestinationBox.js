@@ -13,9 +13,12 @@ function DestinationBox(props){
 
     return(
         <div className="destination-box">
-            <div className="destination-box-name">{destination.name}</div>
-            <button onClick={() => handleDelete(destination.id, destination.dindex, destination.tripid)}>Delete</button>
-            <div>{destination.dist} {destination.dur}</div>
+            <div className="destination-contents">
+                <div className="destination-box-name">{destination.name}</div>
+            
+                <button onClick={() => handleDelete(destination.id, destination.dindex, destination.tripid)}>Delete</button>
+                <div>{destination.dist} {destination.dur}</div>
+            </div>
         </div>
     )
 }

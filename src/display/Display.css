@@ -1,5 +1,14 @@
 .display{
-    background-color: black;
-    min-height: 600px;
-    min-width: 600px;
+    position: fixed;
+    left: 33vw;
+    background-color: rgba(25, 25, 25, .8);
+    width: 65%;
+    height: 50%;
+    min-height: 88vh;
+    margin-top: 70px;
+    margin-right: 8px;
+    border-radius: 30px;
+    border: 3px solid rgba(0, 0, 0, 1);
+    box-shadow: 0px 0px 5px 1px #000000;
+    z-index: -1;
 }

@@ -51,14 +51,13 @@ function Nav(props){
                     <div className = "nav-logo">
                         Trip Maker
                     </div>
-                    <button onClick={beginAutoCompleteSession}>Test</button>
                 </div>
                 <div className = "nav-right">
                     <div className = "nav-new-trip nav-button" onClick={onCreateTrip}>
-                        New Trip
+                        <p>New Trip</p>
                     </div>
                     <div className = "nav-select-trip nav-button" onClick={(e) =>{setDropped(!isDropped); e.stopPropagation()}}>
-                        Select Trip
+                        <p>Select Trip</p>
                         {isDropped &&
                         <div className="nav-dropdown-pane">
                             {trips.map(trip => {return(
@@ -71,7 +70,7 @@ function Nav(props){
                         
                     </div>
                     <div className = "nav-logout nav-button" onClick={onLogout}>
-                        Logout
+                        <p>Logout</p>
                     </div>
                 </div>
             </div>  
@@ -87,10 +86,10 @@ function Nav(props){
                 </div>
                 <div className = "nav-right">
                     <div className = "nav-login nav-button" onClick={onLogin}>
-                        Login
+                        <p>Login</p>
                     </div>
                     <div className = "nav-register nav-button" onClick={onRegister}>
-                        Register
+                        <p>Register</p>
                     </div>
                 </div>
             </div>

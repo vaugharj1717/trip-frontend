@@ -57,24 +57,24 @@ function SelectDestinationBox(props){
 
     if (true) return(
         <div className="select-destination-box" onClick={(e)=>e.stopPropagation()}>
-            <div id ="test" className="stem stem-first">
-
+            <div className="stem">
+                <div className="box">
+                    <input value={text} className="autocomplete-textbox" type="text" placeholder="Type destination" onChange={(e) => handleSearch(e.target.value, googleToken)}>
+                    </input>
+                    <div className="autocomplete-guess-container">
+                        {!isSelection && guesses.map(guess => 
+                            <div key={guess.id} className="autocomplete-guess" onClick={()=>handleSelect(guess.id, guess.name)}>{guess.name}</div>
+                        )}
+                        </div>
+                    {isSelection &&
+                    <button className="create-button" onClick={() => handleCreate(index, googleToken, currentTrip.id, selectedDestination.id, selectedDestination.name)}>Select</button>
+                    }
+                    {!isSelection &&
+                    <button className="create-button" disabled>Select</button>
+                    }
+                </div>
             </div>
-            <div className="box box-first">
-                <input value={text} className="autocomplete-textbox" type="text" placeholder="Type destination" onChange={(e) => handleSearch(e.target.value, googleToken)}>
-                </input>
-                <div className="autocomplete-guess-container">
-                    {!isSelection && guesses.map(guess => 
-                        <div key={guess.id} className="autocomplete-guess" onClick={()=>handleSelect(guess.id, guess.name)}>{guess.name}</div>
-                    )}
-                    </div>
-                {isSelection &&
-                <button onClick={() => handleCreate(index, googleToken, currentTrip.id, selectedDestination.id, selectedDestination.name)}>Select</button>
-                }
-                {!isSelection &&
-                <button disabled>Select</button>
-                }
-            </div>
+            
         </div>    
     )
     

@@ -39,22 +39,14 @@ function App() {
     )
   }
 
-  else if(!tripLoading){
+  else{
     return (
       <div className="App" onClick={handleClick}>
+        <div className="page"></div>
         <Nav user={user} />
         <ContentPane />
       </div>
     );
-  }
-  
-  else{
-    return(
-      <div className="App" onClick={handleClick}>
-          <Nav user={user} />
-          <LoadingPane />
-      </div>
-    )
   }
 }
 

@@ -20,15 +20,13 @@ const initialState = {
 
     //Destination info
     destinations: [],
-    currentDestination: {},    //pertains to observing already created destinations
+    currentDestination: null,    //pertains to observing already created destinations
     selectedDestination: null, //pertains to google searching
     
     //Place info
     places: [],
 
     //Google API
-    google: null,
-    mapLoaded: false,
     googleToken: null,
     gettingGoogleToken: false,
     guesses: [],
@@ -143,7 +141,7 @@ function reducer(state = initialState, action){
                 currentTrip: action.payload.trip,
                 destinations: action.payload.destinations,
                 selectedDestination: null,
-                currentDestination: {},
+                currentDestination: null,
             }
 
         case Action.ToggleEditingTrips:
@@ -196,7 +194,7 @@ function reducer(state = initialState, action){
             };
 
         case Action.FinishCreatingDestination:
-            const newDestination = {id: action.payload.id, url: action.payload.url, fetchphotourl: action.payload.fetchphotourl, dindex: action.payload.dindex, tripid: action.payload.tripid, placeid: action.payload.placeid, name: action.payload.name, dur: action.payload.durdist2.dur, dist: action.payload.durdist2.dist};
+            const newDestination = {id: action.payload.id, url: action.payload.url, fetchphotourl: action.payload.fetchphotourl, dindex: action.payload.dindex, tripid: action.payload.tripid, placeid: action.payload.placeid, name: action.payload.name, dur: action.payload.durdist2.dur, dist: action.payload.durdist2.dist, utcoffset: action.payload.utcoffset};
             console.log("new index: " + action.payload.dindex);
             return{
                 ...state,

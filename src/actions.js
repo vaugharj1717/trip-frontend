@@ -328,7 +328,7 @@ export function startAutoCompleting(text, token){
                 dispatch(finishAutoCompleting(data.guesses))
             }
             else{
-                console.err("Could not autocomplete.")
+                console.error("Could not autocomplete.")
             }
         })
     }
@@ -362,6 +362,7 @@ export function unselectDestination(){
 
 export function createDestination(index, token, tripid, placeid, name){
     return dispatch => {
+        const newName = name.substring(0, name.length - 5);
         const newToken = token;
         dispatch({type: Action.SetGoogleToken, payload: null});
         const options = {
@@ -369,26 +370,26 @@ export function createDestination(index, token, tripid, placeid, name){
             headers:{
                 "Content-Type" : "application/json"
             },
-            body: JSON.stringify({index, name, token: newToken, placeid}),
+            body: JSON.stringify({index, newName, token: newToken, placeid}),
         }
         fetch(`${host}/trip/${tripid}/destination`, options)
         .then(checkForErrors)
         .then(result => result.json())
         .then(data => {
             if(data.ok){
-                dispatch(finishCreatingDestination(data.id, data.url, data.fetchphotourl, index, tripid, placeid, name, data.durdist1, data.durdist2));
+                dispatch(finishCreatingDestination(data.id, data.url, data.fetchphotourl, index, tripid, placeid, newName, data.durdist1, data.durdist2, data.utcoffset));
             }
             else{
-                console.err("Error adding destination");
+                console.error("Error adding destination");
             }
         });
     };
 };
 
-export function finishCreatingDestination(id, url, fetchphotourl, index, tripid, placeid, name, durdist1, durdist2){
+export function finishCreatingDestination(id, url, fetchphotourl, index, tripid, placeid, name, durdist1, durdist2, utcoffset){
     return{
         type: Action.FinishCreatingDestination,
-        payload: {id, url, fetchphotourl, dindex: index, tripid, placeid, name, durdist1, durdist2}
+        payload: {id, url, fetchphotourl, dindex: index, tripid, placeid, name, durdist1, durdist2, utcoffset}
     }
 }
 

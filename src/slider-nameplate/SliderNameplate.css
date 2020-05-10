@@ -1,5 +1,54 @@
 .slider-nameplate{
-    width: 300px;
-    height: 200px;
-    background-color: #ffaaee;
+    position: relative;
+    width: 90%;
+    height: 110px;
+    background-color: #6d2222;
+    border-radius: 20px;
+    box-shadow: 0px 6px 20px 8px #000000;
+    color: white;
+    font-size: 24px;
+}
+
+.show-name-container, .change-name-container{
+    position: absolute;
+    width: 90%;
+    height: 90%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+}
+
+.change-name-container > input{
+    position: absolute;
+    text-align: center;
+    width: 80%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid white;
+    border-radius: 4px;
+    background-color: #239e61;
+}
+.show-name-container > .trip-name{
+    position: absolute;
+    text-align: center;
+    width: 80%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+
+.slider-nameplate::after{
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 97%;
+    height: 92%;
+    transform: translate(-50%, -50%);
+    border-radius: 20px;
+    border: 2px solid white;
+    pointer-events: none;
 }

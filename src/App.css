@@ -1,3 +1,15 @@
 *{
     box-sizing: border-box;
 }
+
+.page{
+    position: fixed;
+    background-image: url("/background.jpg");
+    background-size: cover;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+}
+
+
+
