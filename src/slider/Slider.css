@@ -25,7 +25,7 @@
 
 .slider-destination-connector{
     position: relative;
-    height: 120px;
+    height: 90px;
     width: 5%;
     margin: 0 auto;
     background-color: rgb(80, 71, 71);
@@ -43,12 +43,22 @@
     border-right: 1px solid rgba(0, 0, 0, .4);
 }
 
+.slider-destination-connector-only{
+    position: relative;
+    height: 50px;
+    width: 5%;
+    margin: 0 auto;
+    background-color: transparent;
+    border-left: 1px solid transparent;
+    border-right: 1px solid transparent;
+}
+
 .slider-add-button{
     position: absolute;
-    top: 50%;
+    top: 47%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 280px;
+    width: 240px;
     height: 35px;
     background-color: green;
     border-radius: 5px;

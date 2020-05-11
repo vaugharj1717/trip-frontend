@@ -24,6 +24,8 @@ export const Action = Object.freeze({
     FinishCreatingDestination: "FinishCreatingDestination",
     FinishDeletingDestination: "FinishDeletingDestination",
     SetShowDestinationSelector: "SetShowDestinationSelector",
+    FocusDestination: "FocusDestination",
+    FinishSavingNote: "FinishSavingNote",
 });
 
 const host = "http://localhost:3444";
@@ -432,4 +434,48 @@ export function setShowDestinationSelector(state){
         payload: state
     }
 }
+
+export function focusDestination(destination){
+    return{
+        type: Action.FocusDestination,
+        payload: destination
+    }
+}
+
+export function startSavingNote(text, id, tripid){
+    return dispatch => {
+        const options = {
+            method: "PATCH",
+            headers: {
+                "Content-Type" : "application/json"
+            },
+            body: JSON.stringify({text})
+        }
+        fetch(`${host}/trip/${tripid}/destination/${id}`, options)
+        .then(checkForErrors)
+        .then(response => response.json())
+        .then(data => {
+            if(data.ok){
+                dispatch(finishSavingNote(text, id));
+                console.log("note saved");
+            }
+            else{
+                console.error("Could not save note");
+            }
+        })
+    }
+}
+
+export function startChangingDate(date){
+    
+}
+
+export function finishSavingNote(text, id){
+    return{
+        type: Action.FinishSavingNote,
+        payload: {text, id}
+    }
+}
+
+
 

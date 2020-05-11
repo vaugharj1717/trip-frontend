@@ -42,13 +42,25 @@ function Slider(props){
         }
         
             <div className="slider">
-            {currentTrip && currentTrip.id &&
+            {currentTrip && currentTrip.id && destinations.length > 0 &&
                 <div className="slider-destination-connector-first">
                     <div className="slider-add-button slider-first" onClick={() => onAddDestinationSelect(0)}>
                     {0 === selectionIndex && showDestinationSelector &&
                         <SelectDestinationBox isFirst={true} index={0}/>
                     }
                     <div className = "slider-add-button-text">New Destination</div>
+                    <div className = "slider-add-button-street">{streetTitles[0]}</div>
+                    </div>
+                </div>
+            }
+
+            {currentTrip && currentTrip.id && destinations.length === 0 &&
+                <div className="slider-destination-connector-only">
+                    <div className="slider-add-button slider-first" onClick={() => onAddDestinationSelect(0)}>
+                    {0 === selectionIndex && showDestinationSelector &&
+                        <SelectDestinationBox isFirst={true} index={0}/>
+                    }
+                    <div className = "slider-add-button-text">Starting Point</div>
                     <div className = "slider-add-button-street">{streetTitles[0]}</div>
                     </div>
                 </div>

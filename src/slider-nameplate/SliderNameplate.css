@@ -18,6 +18,10 @@
     transform: translate(-50%, -50%); 
 }
 
+.trip-name{
+    cursor: default;
+}
+
 .change-name-container > input{
     position: absolute;
     text-align: center;
@@ -25,9 +29,23 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    border: 1px solid black;
+    border-radius: 20px;
+    background-color: transparent;
+    font-size: 20px;
+}
+
+.change-name-container > input:focus{
+    outline: none;
+}
+
+.change-name-container > input::after{
+    content: "";
+    position: absolute;
+    background-color: yellow;
     border: 1px solid white;
-    border-radius: 4px;
-    background-color: #239e61;
+    width: 10px;
+    height: 10px;
 }
 .show-name-container > .trip-name{
     position: absolute;
@@ -51,4 +69,37 @@
     border-radius: 20px;
     border: 2px solid white;
     pointer-events: none;
+}
+
+button{
+    border: none;
+    background-color: transparent;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover{
+    color: black;
+}
+
+.cancel-button > svg{
+    font-size: 20px;
+    position: relative;
+}
+
+.cancel-button{
+    position: relative;
+    top: 2px;
+}
+
+.save-button{
+    position: relative;
+    left: 12px;
+    top: -1px;
+}
+
+.delete-button{
+    position: relative;
+    left: 22px;
+    top: -1px;
 }

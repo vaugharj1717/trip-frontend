@@ -8,6 +8,10 @@ import Registration from './registration/Registration.js';
 import {useSelector, useDispatch} from 'react-redux';
 import {stopDropdown} from './actions'
 
+
+
+
+
 function App() {
 
   const dispatch = useDispatch();

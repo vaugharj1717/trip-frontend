@@ -236,6 +236,21 @@ function reducer(state = initialState, action){
                 guesses: [],
             };
 
+        case Action.FocusDestination:
+            console.log(action.payload);
+            return{
+                ...state,
+                currentDestination: action.payload
+            }
+
+        case Action.FinishSavingNote:
+            return{
+                ...state,
+                destinations: state.destinations.map(d => {
+                    if(d.id === action.payload.id) return {...d, text: action.payload.text}
+                    else return d;
+                })
+            }
         
 
         

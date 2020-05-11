@@ -10,7 +10,10 @@
     transform: translateY(-50%);
     height: 10px;
     width: 70px;
-    background-color: black;
+    background-color: rgb(65, 62, 62);
+    border-top: 1px solid rgba(50, 50, 50, .8);
+    border-bottom: 1px solid rgba(50, 50, 50, .8);
+    box-shadow: 2px 0px 4px 1px black;
 }
 
 
