@@ -26,6 +26,7 @@ export const Action = Object.freeze({
     SetShowDestinationSelector: "SetShowDestinationSelector",
     FocusDestination: "FocusDestination",
     FinishSavingNote: "FinishSavingNote",
+    FinishChangingDate: "FinishChangingDate"
 });
 
 const host = "http://localhost:3444";
@@ -379,7 +380,7 @@ export function createDestination(index, token, tripid, placeid, name){
         .then(result => result.json())
         .then(data => {
             if(data.ok){
-                dispatch(finishCreatingDestination(data.id, data.url, data.fetchphotourl, index, tripid, placeid, newName, data.durdist1, data.durdist2, data.utcoffset));
+                dispatch(finishCreatingDestination(data.id, data.url, data.fetchphotourl, index, tripid, placeid, newName, data.durdist1, data.durdist2, data.utcoffset, data.arrival));
             }
             else{
                 console.error("Error adding destination");
@@ -388,10 +389,10 @@ export function createDestination(index, token, tripid, placeid, name){
     };
 };
 
-export function finishCreatingDestination(id, url, fetchphotourl, index, tripid, placeid, name, durdist1, durdist2, utcoffset){
+export function finishCreatingDestination(id, url, fetchphotourl, index, tripid, placeid, name, durdist1, durdist2, utcoffset, arrival){
     return{
         type: Action.FinishCreatingDestination,
-        payload: {id, url, fetchphotourl, dindex: index, tripid, placeid, name, durdist1, durdist2, utcoffset}
+        payload: {id, url, fetchphotourl, dindex: index, tripid, placeid, name, durdist1, durdist2, utcoffset, arrival}
     }
 }
 
@@ -466,8 +467,35 @@ export function startSavingNote(text, id, tripid){
     }
 }
 
-export function startChangingDate(date){
-    
+export function startChangingDate(month, day, year, hour, min, half, tripid, id){
+    return dispatch => {
+        const options = {
+            method: "PATCH",
+            headers: {
+                "Content-Type" : "application/json",
+            },
+            body: JSON.stringify({month, day, year, hour, min, half})
+        }
+        fetch(`${host}/trip/${tripid}/destination/${id}/arrival`, options)
+        .then(checkForErrors)
+        .then(response => response.json())
+        .then(data => {
+            if(data.ok){
+                console.log("Date saved");
+                dispatch(finishChangingDate(month, day, year, hour, min, half, id));
+            }
+            else{
+                console.error("Problem saving date");
+            }
+        })
+    }
+}
+
+export function finishChangingDate(month, day, year, hour, min, half, id){
+    return {
+        type: Action.FinishChangingDate,
+        payload: {id, arrival: {month, day, year, hour, min, half}}
+    }
 }
 
 export function finishSavingNote(text, id){

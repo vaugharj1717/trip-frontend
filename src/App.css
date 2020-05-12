@@ -2,6 +2,10 @@
     box-sizing: border-box;
 }
 
+body{
+    min-width: 910px;
+}
+
 .page{
     position: fixed;
     background-image: url("/background.jpg");

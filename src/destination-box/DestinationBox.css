@@ -8,6 +8,16 @@
     
 }
 
+.destination-box-arrival{
+    position: absolute;
+    color: white;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    text-align: center;
+}
+
 
 .destination-box-name{
     position: absolute;
@@ -18,6 +28,8 @@
     top: 15%;
     left: 50%;
     transform: translate(-50%, -50%);
+    font-size: 20px;
+    text-decoration: underline;
     
 }
 

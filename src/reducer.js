@@ -98,20 +98,8 @@ function reducer(state = initialState, action){
                 guesses: []
             }
         
-            //DELETE?
-        case Action.ShowDestinationSelect:
-            return{
-                ...state,
-                atDestinationSelect: true,
-                destinationSelectIndex: action.payload
-            }
 
-            //DELETE?
-        case Action.HideDestinationSelect:
-            return{
-                ...state,
-                atDestinationSelect: false
-            }
+
 
         case Action.FinishEditingTrip:
             return{
@@ -185,7 +173,7 @@ function reducer(state = initialState, action){
         case Action.SelectDestination:
             return{
                 ...state,
-                selectedDestination: action.payload
+                selectedDestination: action.payload,
             }
         case Action.UnselectDestination:
             return{
@@ -194,7 +182,7 @@ function reducer(state = initialState, action){
             };
 
         case Action.FinishCreatingDestination:
-            const newDestination = {id: action.payload.id, url: action.payload.url, fetchphotourl: action.payload.fetchphotourl, dindex: action.payload.dindex, tripid: action.payload.tripid, placeid: action.payload.placeid, name: action.payload.name, dur: action.payload.durdist2.dur, dist: action.payload.durdist2.dist, utcoffset: action.payload.utcoffset};
+            const newDestination = {id: action.payload.id, url: action.payload.url, fetchphotourl: action.payload.fetchphotourl, dindex: action.payload.dindex, tripid: action.payload.tripid, placeid: action.payload.placeid, name: action.payload.name, dur: action.payload.durdist2.dur, dist: action.payload.durdist2.dist, utcoffset: action.payload.utcoffset, arrival: action.payload.arrival};
             console.log("new index: " + action.payload.dindex);
             return{
                 ...state,
@@ -227,6 +215,7 @@ function reducer(state = initialState, action){
             return{
                 ...state,
                 destinations: newDestinations,
+                currentDestination: null
             };
 
         case Action.SetShowDestinationSelector:
@@ -240,7 +229,8 @@ function reducer(state = initialState, action){
             console.log(action.payload);
             return{
                 ...state,
-                currentDestination: action.payload
+                currentDestination: action.payload,
+                showDestinationSelector: false,
             }
 
         case Action.FinishSavingNote:
@@ -252,6 +242,14 @@ function reducer(state = initialState, action){
                 })
             }
         
+        case Action.FinishChangingDate:
+            return{
+                ...state,
+                destinations: state.destinations.map(d => {
+                    if(d.id === action.payload.id) return {...d, arrival: action.payload.arrival}
+                    else return d;
+                })
+            }
 
         
         
