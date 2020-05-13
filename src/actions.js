@@ -26,7 +26,8 @@ export const Action = Object.freeze({
     SetShowDestinationSelector: "SetShowDestinationSelector",
     FocusDestination: "FocusDestination",
     FinishSavingNote: "FinishSavingNote",
-    FinishChangingDate: "FinishChangingDate"
+    FinishChangingDate: "FinishChangingDate",
+    FinishChangingDepDate: "FinishChangingDepDate"
 });
 
 const host = "http://localhost:3444";
@@ -488,6 +489,37 @@ export function startChangingDate(month, day, year, hour, min, half, tripid, id)
                 console.error("Problem saving date");
             }
         })
+    }
+}
+
+export function startChangingDepDate(month, day, year, hour, min, half, tripid, id){
+    return dispatch => {
+        const options = {
+            method: "PATCH",
+            headers: {
+                "Content-Type" : "application/json",
+            },
+            body: JSON.stringify({month, day, year, hour, min, half})
+        }
+        fetch(`${host}/trip/${tripid}/destination/${id}/departure`, options)
+        .then(checkForErrors)
+        .then(response => response.json())
+        .then(data => {
+            if(data.ok){
+                console.log("Date saved");
+                dispatch(finishChangingDepDate(month, day, year, hour, min, half, id));
+            }
+            else{
+                console.error("Problem saving date");
+            }
+        })
+    }
+}
+
+export function finishChangingDepDate(month, day, year, hour, min, half, id){
+    return {
+        type: Action.FinishChangingDepDate,
+        payload: {id, departure: {month, day, year, hour, min, half}}
     }
 }
 

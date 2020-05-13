@@ -42,7 +42,7 @@ function Slider(props){
         }
         
             <div className="slider">
-            {currentTrip && currentTrip.id && destinations.length > 0 &&
+            {/* {currentTrip && currentTrip.id && destinations.length > 0 &&
                 <div className="slider-destination-connector-first">
                     <div className="slider-add-button slider-first" onClick={() => onAddDestinationSelect(0)}>
                     {0 === selectionIndex && showDestinationSelector &&
@@ -52,7 +52,7 @@ function Slider(props){
                     <div className = "slider-add-button-street">{streetTitles[0]}</div>
                     </div>
                 </div>
-            }
+            } */}
 
             {currentTrip && currentTrip.id && destinations.length === 0 &&
                 <div className="slider-destination-connector-only">
@@ -60,22 +60,21 @@ function Slider(props){
                     {0 === selectionIndex && showDestinationSelector &&
                         <SelectDestinationBox isFirst={true} index={0}/>
                     }
-                    <div className = "slider-add-button-text">Starting Point</div>
-                    <div className = "slider-add-button-street">{streetTitles[0]}</div>
+                    <div className = "slider-add-button-text">Choose Starting Point</div>
                     </div>
                 </div>
             }
                 {destinations.map((d, i) => {
                     return(
                         <div key={d.id} className="slider-destination-container">
-                            <DestinationBox destination={d}/>
+                            <DestinationBox i={i} destination={d}/>
                             {(i !== destinations.length - 1) &&
                                 <div className="slider-destination-connector">
                                     <div className="slider-add-button" onClick={() => onAddDestinationSelect(i+1)}>
                                         {i + 1 === selectionIndex && showDestinationSelector &&
                                             <SelectDestinationBox index={i+1} isFirst={false}/>
                                         }
-                                        <div className = "slider-add-button-text">New Destination</div>
+                                        <div className = "slider-add-button-text">Add Destination</div>
                                         <div className = "slider-add-button-street">{streetTitles[(i+1) % streetTitles.length]}</div>
                                     </div>
                                 </div>
@@ -86,7 +85,7 @@ function Slider(props){
                                         {i + 1 === selectionIndex && showDestinationSelector &&
                                             <SelectDestinationBox index={i+1} isFirst={false}/>
                                         }
-                                        <div className = "slider-add-button-text">New Destination</div>
+                                        <div className = "slider-add-button-text">Add Destination</div>
                                         <div className = "slider-add-button-street">{streetTitles[(i+ 1) % streetTitles.length]}</div>
                                     </div>
                                 </div>

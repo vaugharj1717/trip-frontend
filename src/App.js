@@ -30,14 +30,19 @@ function App() {
   if(atRegistration){
     return(
       <div className="App" onClick={handleClick}>
+        <div className="page"></div>
+        <Nav user={user} />
         <Registration />
       </div>
+
     )
   } 
   
   else if(atLogin){
     return(
       <div className="App" onClick={handleClick}>
+        <div className="page"></div>
+        <Nav user={user} />
         <Login />
       </div>
     )

@@ -1,16 +1,19 @@
 import React, {useEffect, useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import {startSavingNote, startChangingDate} from '../actions.js';
+import {startSavingNote, startChangingDate, startChangingDepDate} from '../actions.js';
 import {debounce} from '../helpers.js';
 import './Display.css';
 
 let handleNoteChange;
 let handleDateChange;
+let handleDepDateChange;
 
 function Display(props){
     const dispatch = useDispatch();
     const destination = props.currentDestination;
+    const trip = props.currentTrip;
     const showDestinationSelector = useSelector(state => state.showDestinationSelector);
+    const user = useSelector(state => state.user);
     const [month, setMonth] = useState("01");
     const [day, setDay] = useState("01");   
     const [year, setYear] = useState("2020"); 
@@ -18,6 +21,12 @@ function Display(props){
     const [min, setMin] = useState("00");
     const [half, setHalf] = useState("AM");
     const [text, setText] = useState("");
+    const [depMonth, setDepMonth] = useState("01");
+    const [depDay, setDepDay] = useState("01");   
+    const [depYear, setDepYear] = useState("2020"); 
+    const [depHour, setDepHour] = useState("12");
+    const [depMin, setDepMin] = useState("00");
+    const [depHalf, setDepHalf] = useState("AM");
     const [left, setLeft] = useState(400);
     const [height, setHeight] = useState(400);
     
@@ -25,8 +34,8 @@ function Display(props){
     useEffect( () => {
         function handleResize(){
             const pageHeight = window.innerHeight;
-            const notesHeight = 374;
-            if(pageHeight < 730){
+            const notesHeight = 338;
+            if(pageHeight < 815){
                 //for every 40px, remove 40px
                 const numRows = Math.floor((730 - pageHeight) / 38);
                 console.log(`${numRows} numrows`);
@@ -53,14 +62,15 @@ function Display(props){
 
     useEffect( () => {
         const initArrival = (destination && destination.arrival) ? destination.arrival : {month: "01", day: "01", year: "2020", hour: "12", min: "00", half: "AM"};
+        const initDeparture = (destination && destination.departure) ? destination.departure : {month: "01", day: "01", year: "2020", hour: "12", min: "00", half: "AM"};
         const initText = (destination && destination.text !== null) ? destination.text : "";
         setText(initText);
-        setMonth(initArrival.month);
-        setDay(initArrival.day);
-        setYear(initArrival.year);
-        setHour(initArrival.hour);
-        setMin(initArrival.min);
-        setHalf(initArrival.half);
+        setMonth(initArrival.month); setDepMonth(initDeparture.month);
+        setDay(initArrival.day);     setDepDay(initDeparture.day);
+        setYear(initArrival.year);   setDepYear(initDeparture.year);
+        setHour(initArrival.hour);   setDepHour(initDeparture.hour);
+        setMin(initArrival.min);     setDepMin(initDeparture.min);
+        setHalf(initArrival.half);   setDepHalf(initDeparture.half);
     }, [destination]);
 
 
@@ -79,6 +89,16 @@ function Display(props){
         }
         , 500, false);
 
+        const doDepDateChange = debounce((month, day, year, hour, min, half, tripid, id) => {
+            if(isSanitized(month, day, year, hour, min, half)){
+                dispatch(startChangingDepDate(month, day, year, hour, min, half, tripid, id));
+            }
+            else{
+                console.log("Invalid date")
+            }
+        }
+        , 500, false);
+
         handleNoteChange = function(text, id, tripid){
             setText(text);
             doNoteSave(text, id, tripid);
@@ -86,6 +106,10 @@ function Display(props){
 
         handleDateChange = function(month, day, year, hour, min, half, tripid, id){
             doDateChange(month, day, year, hour, min, half, tripid, id);
+        }
+
+        handleDepDateChange = function(month, day, year, hour, min, half, tripid, id){
+            doDepDateChange(month, day, year, hour, min, half, tripid, id);
         }
 
         function isSanitized(month, day, year, hour, min, half){
@@ -121,100 +145,189 @@ function Display(props){
         }
     }, [month, day, year, hour, min, half, destination]);
 
+    useEffect(() => {
+        if(destination){
+            handleDepDateChange(depMonth, depDay, depYear, depHour, depMin, depHalf, destination.tripid, destination.id);
+        }
+    }, [depMonth, depDay, depYear, depHour, depMin, depHalf, destination]);
+
     function handleClick(){
         sanitizeDateInput();
+        sanitizeDepDateInput();
+    }
+
+    function sanitizeDepDateInput(){
+        if(isNaN(depMonth) || depMonth <= 0 || depMonth > 12 || depMonth.indexOf(' ') !== -1 || depMonth.indexOf('-') !== -1 || depMonth.indexOf('.') !== -1) {
+            setDepMonth("01");
+        } else{setDepMonth(depMonth => depMonth.padStart(2, '0'))}
+        if(isNaN(depYear) || depYear < 1000 || depYear.indexOf(' ') !== -1 || depYear.indexOf('-') !== -1 || depYear.indexOf('.') !== -1) {
+            setDepYear("2020");
+        } 
+        if(isNaN(depHour) || depHour <= 0 || depHour > 12 || depHour.indexOf(' ') !== -1 || depHour.indexOf('-') !== -1 || depHour.indexOf('.') !== -1) {
+            setDepHour("01");
+        } else{setDepHour(depHour => depHour.padStart(2, '0'))}
+        if(isNaN(depMin) || depMin < 0 || depMin >= 60 || depMin.indexOf(' ') !== -1 || depMin.indexOf('-') !== -1 || depMin.indexOf('.') !== -1) {
+            setDepMin("00");
+        } else{setDepMin(depMin => depMin.padStart(2, '0'))}
+        if(isNaN(depDay) || depDay <= 0 || depDay > 31 || depDay.indexOf(' ') !== -1 || depDay.indexOf('-') !== -1 || depDay.indexOf('.') !== -1) {
+            setDepDay("01");
+        } else{setDepDay(depDay => depDay.padStart(2, '0'))}
+        if(depHalf.toUpperCase() !== "PM" && depHalf.toUpperCase() !== "AM"){
+            setHalf("AM");
+        } else{setDepHalf(depHalf => depHalf.toUpperCase())}
     }
 
     function sanitizeDateInput(){
-        if(isNaN(month) || month <= 0 || month > 12 || month.indexOf('-') !== -1 || month.indexOf('.') !== -1) {
+        if(isNaN(month) || month <= 0 || month > 12 || month.indexOf(' ') !== -1 || month.indexOf('-') !== -1 || month.indexOf('.') !== -1) {
             setMonth("01");
         } else{setMonth(month => month.padStart(2, '0'))}
-        if(isNaN(year) || year < 1000 || year.indexOf('-') !== -1 || year.indexOf('.') !== -1) {
+        if(isNaN(year) || year < 1000 || year.indexOf(' ') !== -1 || year.indexOf('-') !== -1 || year.indexOf('.') !== -1) {
             setYear("2020");
         } 
-        if(isNaN(hour) || hour <= 0 || hour > 12 || hour.indexOf('-') !== -1 || hour.indexOf('.') !== -1) {
+        if(isNaN(hour) || hour <= 0 || hour > 12 || hour.indexOf(' ') !== -1 || hour.indexOf('-') !== -1 || hour.indexOf('.') !== -1) {
             setHour("01");
         } else{setHour(hour => hour.padStart(2, '0'))}
-        if(isNaN(min) || min < 0 || min >= 60 || min.indexOf('-') !== -1 || min.indexOf('.') !== -1) {
+        if(isNaN(min) || min < 0 || min >= 60 || min.indexOf(' ') !== -1 || min.indexOf('-') !== -1 || min.indexOf('.') !== -1) {
             setMin("00");
         } else{setMin(min => min.padStart(2, '0'))}
-        if(isNaN(day) || day <= 0 || day > 31 || day.indexOf('-') !== -1 || day.indexOf('.') !== -1) {
+        if(isNaN(day) || day <= 0 || day > 31 || day.indexOf(' ') !== -1 || day.indexOf('-') !== -1 || day.indexOf('.') !== -1) {
             setDay("01");
-        } else{setMin(day => day.padStart(2, '0'))}
+        } else{setDay(day => day.padStart(2, '0'))}
         if(half.toUpperCase() !== "PM" && half.toUpperCase() !== "AM"){
             setHalf("AM");
         } else{setHalf(half => half.toUpperCase())}
     }
 
     
-
     if(!showDestinationSelector && destination) return(
         <div id="display" style={{left: `${left}px`}} onClick={handleClick} className="display">
-            <div className="destination-name">{destination.name}</div>
-            <div className="arrival">Arrival: 
-            <div className="date">
-                    <input type="text" maxLength={2} className="date-input" value={month} 
-                    onChange={(e) => setMonth(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>/
-                    <input type="text" maxLength={2} className="date-input" value={day} 
-                    onChange={(e) => setDay(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>/
-                    <input type="text" maxLength={4} className="date-input year" value={year} 
-                    onChange={(e) => setYear(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>&nbsp;
-                    <input type="text" maxLength={2} className="date-input" value={hour} 
-                    onChange={(e) => setHour(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>:
-                    <input type="text" maxLength={2} className="date-input" value={min} 
-                    onChange={(e) => setMin(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>&nbsp;
-                    <input type="text" maxLength={2} className="date-input half" value={half} 
-                    onChange={(e) => setHalf(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>
+                <div className="display-header-container">
+                    <div className="display-header-left">
+                        {destination.fetchphotourl && destination.fetchphotourl !== "nophoto" &&
+                        <div className="photo" style={{backgroundImage: `url(${destination.fetchphotourl})`,}}>
+                            <a href={destination.fetchphotourl} target="_blank"></a>
+                        </div>
+                        }
+                    </div>
+                    <div className="display-header-right">
+                        <div className="destination-name">{destination.name}
+                            <div className="arrival">Arrival: 
+                                <div className="date">
+                                    <input type="text" maxLength={2} className="date-input" value={month} 
+                                    onChange={(e) => setMonth(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>/
+                                    <input type="text" maxLength={2} className="date-input" value={day} 
+                                    onChange={(e) => setDay(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>/
+                                    <input type="text" maxLength={4} className="date-input year" value={year} 
+                                    onChange={(e) => setYear(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>&nbsp;
+                                    <input type="text" maxLength={2} className="date-input" value={hour} 
+                                    onChange={(e) => setHour(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>:
+                                    <input type="text" maxLength={2} className="date-input" value={min} 
+                                    onChange={(e) => setMin(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>&nbsp;
+                                    <input type="text" maxLength={2} className="date-input half" value={half} 
+                                    onChange={(e) => setHalf(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>
+                                </div>
+                            </div>
+                            <div className="departure">Departure: 
+                                <div className="date">
+                                    <input type="text" maxLength={2} className="date-input" value={depMonth} 
+                                    onChange={(e) => setDepMonth(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>/
+                                    <input type="text" maxLength={2} className="date-input" value={depDay} 
+                                    onChange={(e) => setDepDay(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>/
+                                    <input type="text" maxLength={4} className="date-input year" value={depYear} 
+                                    onChange={(e) => setDepYear(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>&nbsp;
+                                    <input type="text" maxLength={2} className="date-input" value={depHour} 
+                                    onChange={(e) => setDepHour(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>:
+                                    <input type="text" maxLength={2} className="date-input" value={depMin} 
+                                    onChange={(e) => setDepMin(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>&nbsp;
+                                    <input type="text" maxLength={2} className="date-input half" value={depHalf} 
+                                    onChange={(e) => setDepHalf(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>
+                                </div>
+                            </div>
+                        <div className="map-button"><a href={destination.url} target="_blank">Go to map</a></div>
+                        </div>     
                 </div>
+                
             </div>
-            <div className="map-button"><a href={destination.url} target="_blank">Go to map</a></div>
-            {destination.fetchphotourl && destination.fetchphotourl !== "nophoto" &&
-            <div className="photo" style={{
-                backgroundImage: `url(${destination.fetchphotourl})`,
-            }}><a href={destination.fetchphotourl} target="_blank"></a></div>
-            }
-            <div className="note-header" style={{bottom: `${height + 22}px`}}>Notes</div>
+            <div className="note-header" style={{bottom: `${height + 10}px`}}>Notes</div>
             <textarea value={text} style={{height: `${height}px`}} maxLength="500" background-attachment="local" className="note-box" onChange={(e) => handleNoteChange(e.target.value, destination.id, destination.tripid)}></textarea>
             
         </div>
     )
 
-    else return(
-        <div id="display" onClick={handleClick} className="display-z">
-            <div className="destination-name">{"Hi"}</div>
-            <div className="arrival">Arrival: 
-            <div className="date">
-            <input type="text" maxLength={2} className="date-input" value={month} 
-                    onChange={(e) => setMonth(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>/
-                    <input type="text" maxLength={2} className="date-input" value={day} 
-                    onChange={(e) => setDay(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>/
-                    <input type="text" maxLength={4} className="date-input year" value={year} 
-                    onChange={(e) => setYear(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>&nbsp;
-                    <input type="text" maxLength={2} className="date-input" value={hour} 
-                    onChange={(e) => setHour(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>:
-                    <input type="text" maxLength={2} className="date-input" value={min} 
-                    onChange={(e) => setMin(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>&nbsp;
-                    <input type="text" maxLength={2} className="date-input half" value={half} 
-                    onChange={(e) => setHalf(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>
+    else if(showDestinationSelector && destination) return(
+        <div id="display" style={{left: `${left}px`}} onClick={handleClick} className="display-z">
+                <div className="display-header-container">
+                    <div className="display-header-left">
+                        {destination.fetchphotourl && destination.fetchphotourl !== "nophoto" &&
+                        <div className="photo" style={{backgroundImage: `url(${destination.fetchphotourl})`,}}>
+                            <a href={destination.fetchphotourl} target="_blank"></a>
+                        </div>
+                        }
+                    </div>
+                    <div className="display-header-right">
+                        <div className="destination-name">{destination.name}
+                            <div className="arrival">Arrival: 
+                                <div className="date">
+                                    <input type="text" maxLength={2} className="date-input" value={month} 
+                                    onChange={(e) => setMonth(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>/
+                                    <input type="text" maxLength={2} className="date-input" value={day} 
+                                    onChange={(e) => setDay(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>/
+                                    <input type="text" maxLength={4} className="date-input year" value={year} 
+                                    onChange={(e) => setYear(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>&nbsp;
+                                    <input type="text" maxLength={2} className="date-input" value={hour} 
+                                    onChange={(e) => setHour(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>:
+                                    <input type="text" maxLength={2} className="date-input" value={min} 
+                                    onChange={(e) => setMin(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>&nbsp;
+                                    <input type="text" maxLength={2} className="date-input half" value={half} 
+                                    onChange={(e) => setHalf(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>
+                                </div>
+                            </div>
+                            <div className="departure">Departure: 
+                                <div className="date">
+                                    <input type="text" maxLength={2} className="date-input" value={depMonth} 
+                                    onChange={(e) => setDepMonth(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>/
+                                    <input type="text" maxLength={2} className="date-input" value={depDay} 
+                                    onChange={(e) => setDepDay(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>/
+                                    <input type="text" maxLength={4} className="date-input year" value={depYear} 
+                                    onChange={(e) => setDepYear(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>&nbsp;
+                                    <input type="text" maxLength={2} className="date-input" value={depHour} 
+                                    onChange={(e) => setDepHour(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>:
+                                    <input type="text" maxLength={2} className="date-input" value={depMin} 
+                                    onChange={(e) => setDepMin(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>&nbsp;
+                                    <input type="text" maxLength={2} className="date-input half" value={depHalf} 
+                                    onChange={(e) => setDepHalf(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>
+                                </div>
+                            </div>
+                        <div className="map-button"><a href={destination.url} target="_blank">Go to map</a></div>
+                        </div>     
                 </div>
+                
             </div>
-            <div  className="note-header">Notes</div>
-            <textarea value={text} rows="11"  cols="11" maxLength="500" background-attachment="local" className="note-box" onChange={(e) => handleNoteChange(e.target.value, destination.id, destination.tripid)}></textarea>
+            <div className="note-header" style={{bottom: `${height + 10}px`}}>Notes</div>
+            <textarea value={text} style={{height: `${height}px`}} maxLength="500" background-attachment="local" className="note-box" onChange={(e) => handleNoteChange(e.target.value, destination.id, destination.tripid)}></textarea>
         </div>
-        
+    )
+    
+    else if(trip && !destination) return(
+        <div id="display" style={{left: `${left}px`}} className="display-z">
+                <div className="no-dest-header">No Destination Selected</div>
+                <div className="no-dest-msg">Create or select a destination to see more.</div>
+        </div>
     )
 
-    // else if(destination) return(
-    //     <div id="display" className="display-z">
-    //         <div className="destination-name">{destination.name}</div>
-    //         <div className="note-header">Notes</div>
-    //         <textarea value={text} rows="11"  cols="11" maxLength="500" background-attachment="local" className="note-box" onChange={(e) => handleNoteChange(e.target.value, destination.id, destination.tripid)}></textarea>
-    //     </div>
-    // )
+    else if(!user.isLoggedIn) return(
+        <div className="display-only">
+            <div className="title-header">Trip Maker</div>
+            <div className="title-msg">Register or Login to get started.</div>
+        </div>
+    )
 
-    // else return(
-    //     <div className="display-z"></div>
-    // )
+    else return(
+        <div className="display-only">
+            <div className="title-header">Hello, {user.username}.</div>
+            <div className="title-msg">Create a trip to get started.</div>
+        </div>
+    )
 }
 
 export default Display;

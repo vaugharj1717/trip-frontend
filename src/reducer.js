@@ -16,7 +16,7 @@ const initialState = {
     //Trip info
     tripLoading: false,
     trips: [{id: 1, name: "Big Trip"}, {id: 2, name: "Little Trip"}],
-    currentTrip: {},
+    currentTrip: null,
 
     //Destination info
     destinations: [],
@@ -48,7 +48,7 @@ function reducer(state = initialState, action){
                 atLogin: false,
                 trips: action.payload.trips,
                 destinations: [],
-                currentTrip: {},
+                currentTrip: null,
                 showDestinationSelector: false,
                 guesses: [],
             }
@@ -59,19 +59,22 @@ function reducer(state = initialState, action){
                 user: {isLoggedIn: false},
                 destinations: [],
                 trips: [],
-                currentTrip: {},
+                currentTrip: null,
+                currentDestination: null,
             }
 
         case Action.GoToRegistration:
             return{
                 ...state,
-                atRegistration: true
+                atRegistration: true,
+                atLogin: false,
             }
 
         case Action.GoToLogin:
             return{
                 ...state,
                 atLogin: true,
+                atRegistration: false,
             }
         
         case Action.FinishRegistering:
@@ -79,11 +82,12 @@ function reducer(state = initialState, action){
                 ...state,
                 user: {...action.payload, isLoggedIn: true},
                 trips: [],
-                currentTrip: {},
+                currentTrip: null,
                 atRegistration: false,
                 destinations: [],
                 showDestinationSelector: false,
                 guesses: [],
+                currentDestination: null,
             }
         
 
@@ -95,7 +99,8 @@ function reducer(state = initialState, action){
                 destinations: [],
                 isEditingTrip: true,
                 showDestinationSelector: false,
-                guesses: []
+                guesses: [],
+                currentDestination: null,
             }
         
 
@@ -117,9 +122,10 @@ function reducer(state = initialState, action){
         case Action.FinishDeletingTrip:
                 return{
                     ...state,
-                    currentTrip: {},
+                    currentTrip: null,
                     trips: state.trips.filter(trip => trip.id !== action.payload),
                     destinations: [],
+                    currentDestination: null,
                 }
 
         case Action.FinishSelectingTrip:
@@ -247,6 +253,15 @@ function reducer(state = initialState, action){
                 ...state,
                 destinations: state.destinations.map(d => {
                     if(d.id === action.payload.id) return {...d, arrival: action.payload.arrival}
+                    else return d;
+                })
+            }
+
+        case Action.FinishChangingDepDate:
+            return{
+                ...state,
+                destinations: state.destinations.map(d => {
+                    if(d.id === action.payload.id) return {...d, departure: action.payload.departure}
                     else return d;
                 })
             }

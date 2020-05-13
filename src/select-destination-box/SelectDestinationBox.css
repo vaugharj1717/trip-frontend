@@ -23,7 +23,6 @@
     height: 100px;
     width: 200px;
     transform: translateY(-50%);
-    z-index: 2;
     border-radius: 5px;
     background-color: #239e61;
     box-shadow: 0px 6px 10px 4px #000000;
@@ -58,7 +57,7 @@
     top: 2px;
     left: 50%;
     transform: translateX(-50%);
-    width: 185px;
+    width: 180px;
     border-radius: 2px;
     text-align: center;
 }
@@ -84,13 +83,67 @@
     min-height: 25px;
     padding: 5px 0;
     background-color: white;
+    z-index: 3;
 }
 
 .create-button{
     position: absolute;
-    bottom: 5px;
+    bottom: 9px;
+    padding: 5px;
+    width: 80px;
     left: 50%;
     transform: translateX(-50%);
+    background-color: white;
+    border-radius: 15px;
+    color: black;
+    border: 1px solid rgba(0, 0, 0, .8);
+    z-index: -1;
+}
+
+.create-button:hover{
+    background-color: rgba(220, 220, 220);
+}
+
+.select-destination-box-first{
+    position: relative;
+    height: 100%;
+}
+
+.stem-first{
+    position: absolute;
+    left: 50%;
+    top: 105%;
+    transform: translateX(-50%);
+    height: 70px;
+    width: 10px;
+    background-color: rgb(65, 62, 62);
+    border-left: 1px solid rgba(50, 50, 50, .8);
+    border-right: 1px solid rgba(50, 50, 50, .8);
+    box-shadow: 0px 4px 3px 2px black;
 }
 
 
+.box-first{
+    position: absolute;
+    left: 100%;
+    top: 100%;
+    height: 100px;
+    width: 200px;
+    transform: translateX(-50%);
+    border-radius: 5px;
+    background-color: #239e61;
+    box-shadow: 0px 4px 10px 3px #000000;
+}
+
+.box-first::after{
+    pointer-events: none;
+    position: absolute;
+    content: "";
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 95%;
+    height: 95%;
+    border: 2px solid white;
+    border-radius: 5px;
+}

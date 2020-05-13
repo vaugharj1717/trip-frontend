@@ -6,13 +6,14 @@ import Display from '../display/Display.js';
 import {actions} from '../actions.js';
 
 function ContentPane(props){
+    const currentTrip = useSelector(state => state.currentTrip);
     const destinations = useSelector(state => state.destinations);
     const currentDestination = useSelector(state => state.currentDestination);
 
     return(
         <div className="content-pane">
             <Slider destinations={destinations}/>
-            <Display currentDestination={currentDestination}/>
+            <Display currentDestination={currentDestination} currentTrip={currentTrip}/>
         </div>
     )
 }

@@ -55,7 +55,7 @@ function SelectDestinationBox(props){
 
 
 
-    if (true) return(
+    if (!isFirst) return(
         <div className="select-destination-box" onClick={(e)=>e.stopPropagation()}>
             <div className="stem">
                 <div className="box">
@@ -74,7 +74,27 @@ function SelectDestinationBox(props){
                     }
                 </div>
             </div>
-            
+        </div>    
+    )
+    else return(
+        <div className="select-destination-box-first" onClick={(e)=>e.stopPropagation()}>
+            <div className="stem-first">
+                <div className="box-first">
+                    <input value={text} className="autocomplete-textbox" type="text" placeholder="Type destination" onChange={(e) => handleSearch(e.target.value, googleToken)}>
+                    </input>
+                    <div className="autocomplete-guess-container">
+                        {!isSelection && guesses.map(guess => 
+                            <div key={guess.id} className="autocomplete-guess" onClick={()=>handleSelect(guess.id, guess.name)}>{guess.name}</div>
+                        )}
+                        </div>
+                    {isSelection &&
+                    <button className="create-button" onClick={() => handleCreate(index, googleToken, currentTrip.id, selectedDestination.id, selectedDestination.name)}>Select</button>
+                    }
+                    {!isSelection &&
+                    <button className="create-button" disabled>Select</button>
+                    }
+                </div>
+            </div>
         </div>    
     )
     
