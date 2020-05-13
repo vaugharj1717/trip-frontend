@@ -25,7 +25,8 @@ function DestinationBox(props){
             <button className="delete" onClick={(e) => {handleDelete(destination.id, destination.dindex, destination.tripid); e.stopPropagation()}}><FontAwesomeIcon color="white" icon={faTimes}/></button>
             <div className="destination-contents">
                 <div className="destination-box-name">{destination.name}</div>
-                <div className="destination-box-arrival">Arrival:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{destination.arrival.month}/{destination.arrival.day}/{destination.arrival.year} {destination.arrival.hour}:{destination.arrival.min} {destination.arrival.half}</div>
+                <div className="destination-box-arrival">Arrival:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{destination.arrival.month}/{destination.arrival.day}/{destination.arrival.year} &nbsp;{destination.arrival.hour}:{destination.arrival.min} {destination.arrival.half}</div>
+                <div className="destination-box-departure">Departure:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{destination.departure.month}/{destination.departure.day}/{destination.departure.year} &nbsp;{destination.departure.hour}:{destination.departure.min} {destination.departure.half}</div>
                 {destination.dur !== null && destination.dist !== null && 
                 <div>
                     <div className="dist">{destination.dist} ({destination.dur})</div>

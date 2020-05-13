@@ -381,7 +381,7 @@ export function createDestination(index, token, tripid, placeid, name){
         .then(result => result.json())
         .then(data => {
             if(data.ok){
-                dispatch(finishCreatingDestination(data.id, data.url, data.fetchphotourl, index, tripid, placeid, newName, data.durdist1, data.durdist2, data.utcoffset, data.arrival));
+                dispatch(finishCreatingDestination(data.id, data.url, data.fetchphotourl, index, tripid, placeid, newName, data.durdist1, data.durdist2, data.utcoffset, data.arrival, data.departure));
             }
             else{
                 console.error("Error adding destination");
@@ -390,10 +390,10 @@ export function createDestination(index, token, tripid, placeid, name){
     };
 };
 
-export function finishCreatingDestination(id, url, fetchphotourl, index, tripid, placeid, name, durdist1, durdist2, utcoffset, arrival){
+export function finishCreatingDestination(id, url, fetchphotourl, index, tripid, placeid, name, durdist1, durdist2, utcoffset, arrival, departure){
     return{
         type: Action.FinishCreatingDestination,
-        payload: {id, url, fetchphotourl, dindex: index, tripid, placeid, name, durdist1, durdist2, utcoffset, arrival}
+        payload: {id, url, fetchphotourl, dindex: index, tripid, placeid, name, durdist1, durdist2, utcoffset, arrival, departure}
     }
 }
 

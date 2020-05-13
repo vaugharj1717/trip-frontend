@@ -11,8 +11,18 @@
 .destination-box-arrival{
     position: absolute;
     color: white;
-    top: 55px;
+    top: 45px;
     left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    text-align: center;
+}
+
+.destination-box-departure{
+    position: absolute;
+    color: white;
+    top: 65px;
+    left: calc(50% - 12px);
     transform: translateX(-50%);
     width: 100%;
     text-align: center;

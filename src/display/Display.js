@@ -29,18 +29,36 @@ function Display(props){
     const [depHalf, setDepHalf] = useState("AM");
     const [left, setLeft] = useState(400);
     const [height, setHeight] = useState(400);
+    const [right, setRight] = useState(0);
     
 
     useEffect( () => {
         function handleResize(){
             const pageHeight = window.innerHeight;
-            const notesHeight = 338;
-            if(pageHeight < 815){
+            const pageWidth = window.innerWidth;
+            const notesHeight = 350;
+            if(pageHeight < 815 && pageHeight > 500){
                 //for every 40px, remove 40px
                 const numRows = Math.floor((730 - pageHeight) / 38);
                 console.log(`${numRows} numrows`);
-                setTimeout(() => setHeight(notesHeight - (38 * numRows), 0));
+                setHeight(notesHeight - (38 * numRows));
             }
+            else if(pageHeight <= 500){
+                setHeight(156);
+            }
+
+            let name;
+            let photo;
+            photo = document.getElementById('photo');
+            if(document.getElementById('name')) name = document.getElementById('name');
+            if(photo && name !== undefined && pageWidth < 1250 && pageWidth > 1000){
+                setRight((1250 - pageWidth) * .5);
+            }
+            else if(photo && name !== undefined && pageWidth <= 1035 && pageWidth > 950) setRight(((1250 - pageWidth) * .5) - 35);
+            else if(photo && pageWidth <= 950) setRight(114);
+            else setRight(0);
+            
+            
         }
 
         function handleScroll(){
@@ -58,7 +76,7 @@ function Display(props){
             window.removeEventListener('resize', handleResize)
         }
         
-    }, []);
+    }, [destination]);
 
     useEffect( () => {
         const initArrival = (destination && destination.arrival) ? destination.arrival : {month: "01", day: "01", year: "2020", hour: "12", min: "00", half: "AM"};
@@ -204,13 +222,12 @@ function Display(props){
                 <div className="display-header-container">
                     <div className="display-header-left">
                         {destination.fetchphotourl && destination.fetchphotourl !== "nophoto" &&
-                        <div className="photo" style={{backgroundImage: `url(${destination.fetchphotourl})`,}}>
+                        <div id="photo" className="photo" style={{backgroundImage: `url(${destination.fetchphotourl})`,}}>
                             <a href={destination.fetchphotourl} target="_blank"></a>
                         </div>
                         }
                     </div>
-                    <div className="display-header-right">
-                        <div className="destination-name">{destination.name}
+                        <div id="name" className="destination-name" style={{left: `calc(50% + ${right}px)`}}>{destination.name}
                             <div className="arrival">Arrival: 
                                 <div className="date">
                                     <input type="text" maxLength={2} className="date-input" value={month} 
@@ -245,8 +262,6 @@ function Display(props){
                             </div>
                         <div className="map-button"><a href={destination.url} target="_blank">Go to map</a></div>
                         </div>     
-                </div>
-                
             </div>
             <div className="note-header" style={{bottom: `${height + 10}px`}}>Notes</div>
             <textarea value={text} style={{height: `${height}px`}} maxLength="500" background-attachment="local" className="note-box" onChange={(e) => handleNoteChange(e.target.value, destination.id, destination.tripid)}></textarea>
@@ -259,13 +274,12 @@ function Display(props){
                 <div className="display-header-container">
                     <div className="display-header-left">
                         {destination.fetchphotourl && destination.fetchphotourl !== "nophoto" &&
-                        <div className="photo" style={{backgroundImage: `url(${destination.fetchphotourl})`,}}>
+                        <div id="photo" className="photo" style={{backgroundImage: `url(${destination.fetchphotourl})`,}}>
                             <a href={destination.fetchphotourl} target="_blank"></a>
                         </div>
                         }
                     </div>
-                    <div className="display-header-right">
-                        <div className="destination-name">{destination.name}
+                        <div id="name" className="destination-name" style={{left: `calc(50% + ${right}px)`}}>{destination.name}
                             <div className="arrival">Arrival: 
                                 <div className="date">
                                     <input type="text" maxLength={2} className="date-input" value={month} 
@@ -300,11 +314,10 @@ function Display(props){
                             </div>
                         <div className="map-button"><a href={destination.url} target="_blank">Go to map</a></div>
                         </div>     
-                </div>
-                
             </div>
             <div className="note-header" style={{bottom: `${height + 10}px`}}>Notes</div>
             <textarea value={text} style={{height: `${height}px`}} maxLength="500" background-attachment="local" className="note-box" onChange={(e) => handleNoteChange(e.target.value, destination.id, destination.tripid)}></textarea>
+            
         </div>
     )
     
