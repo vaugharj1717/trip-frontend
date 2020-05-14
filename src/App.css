@@ -14,11 +14,23 @@ body{
     height: 100vh;
     z-index: -1;
     pointer-events: none;
+    
 }
 
 .App{
     height: 100vh;
+    z-index: -1;
 }
 
+
+.loading-container{
+    z-index: 5;
+    position: fixed;
+    left: calc(50% + 180px);
+    top: 50%;
+    width: 100px;
+    transform: translate(-50%, -50%);
+
+}
 
 

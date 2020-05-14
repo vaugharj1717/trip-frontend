@@ -9,19 +9,26 @@ const initialState = {
     isEditingTrip: false,
     showDestinationSelector: false,
 
+    //Loading info
+    loginLoading: false,
+    registerLoading: false,
+    dateLoading: false,
+    noteLoading: false,
+    tripLoading: false,
+    destinationLoading: false,
+
 
     //User info
     user: {isLoggedIn: false},
 
     //Trip info
-    tripLoading: false,
     trips: [{id: 1, name: "Big Trip"}, {id: 2, name: "Little Trip"}],
     currentTrip: null,
 
     //Destination info
     destinations: [],
     currentDestination: null,    //pertains to observing already created destinations
-    selectedDestination: null, //pertains to google searching
+    selectedDestination: null,   //pertains to google searching
     
     //Place info
     places: [],
@@ -136,6 +143,7 @@ function reducer(state = initialState, action){
                 destinations: action.payload.destinations,
                 selectedDestination: null,
                 currentDestination: null,
+                showDestinationSelector: false,
             }
 
         case Action.ToggleEditingTrips:
@@ -186,6 +194,42 @@ function reducer(state = initialState, action){
                 ...state,
                 selectedDestination: null,
             };
+
+        case Action.LoginLoading:
+            return{
+                ...state,
+                loginLoading: action.payload,
+            }
+
+        case Action.RegisterLoading:
+            return{
+                ...state,
+                registerLoading: action.payload,
+            }
+
+        case Action.DestinationLoading:
+            return{
+                ...state,
+                destinationLoading: action.payload,
+            }
+
+        case Action.TripLoading:
+            return{
+                ...state,
+                tripLoading: action.payload,
+            }
+
+        case Action.NoteLoading:
+            return{
+                ...state,
+                noteLoading: action.payload,
+            }
+
+        case Action.DateLoading:
+            return{
+                ...state,
+                dateLoading: action.payload,
+            }
 
         case Action.FinishCreatingDestination:
             const newDestination = {id: action.payload.id, url: action.payload.url, fetchphotourl: action.payload.fetchphotourl, dindex: action.payload.dindex, tripid: action.payload.tripid, placeid: action.payload.placeid, name: action.payload.name, dur: action.payload.durdist2.dur, dist: action.payload.durdist2.dist, utcoffset: action.payload.utcoffset, arrival: action.payload.arrival, departure: action.payload.departure};

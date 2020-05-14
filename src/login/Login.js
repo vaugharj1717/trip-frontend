@@ -29,7 +29,6 @@ function Login(props){
             <input type="password" className="login-field field-password" onChange={(e) => setPassword(e.target.value)}></input>
             <button className="login-submit" onClick={() => onLogin(username, password)}>Log In</button>
         </div>
-        
     )
 }
 

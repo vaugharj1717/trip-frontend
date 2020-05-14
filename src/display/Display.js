@@ -1,8 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import {startSavingNote, startChangingDate, startChangingDepDate} from '../actions.js';
+import {Action, startSavingNote, startChangingDate, startChangingDepDate} from '../actions.js';
 import {debounce} from '../helpers.js';
 import './Display.css';
+import Spinner from '../spinner/Spinner.js';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 let handleNoteChange;
 let handleDateChange;
@@ -30,6 +33,12 @@ function Display(props){
     const [left, setLeft] = useState(400);
     const [height, setHeight] = useState(400);
     const [right, setRight] = useState(0);
+    const [validDate, setValidDate] = useState(true);
+    const destinationLoading = useSelector(state => state.destinationLoading);
+    const tripLoading = useSelector(state => state.tripLoading);
+    const noteLoading = useSelector(state => state.noteLoading);
+    const dateLoading = useSelector(state => state.dateLoading);
+
     
 
     useEffect( () => {
@@ -71,6 +80,7 @@ function Display(props){
         
         handleResize();
         handleScroll();
+
         return ()=>{
             window.removeEventListener('scroll', handleScroll);
             window.removeEventListener('resize', handleResize)
@@ -89,6 +99,7 @@ function Display(props){
         setHour(initArrival.hour);   setDepHour(initDeparture.hour);
         setMin(initArrival.min);     setDepMin(initDeparture.min);
         setHalf(initArrival.half);   setDepHalf(initDeparture.half);
+        setValidDate(true);
     }, [destination]);
 
 
@@ -102,7 +113,8 @@ function Display(props){
                 dispatch(startChangingDate(month, day, year, hour, min, half, tripid, id));
             }
             else{
-                console.log("Invalid date")
+                setValidDate(false);
+                dispatch({type: Action.DateLoading, payload: false})
             }
         }
         , 500, false);
@@ -112,44 +124,50 @@ function Display(props){
                 dispatch(startChangingDepDate(month, day, year, hour, min, half, tripid, id));
             }
             else{
-                console.log("Invalid date")
+                setValidDate(false);
+                dispatch({type: Action.DateLoading, payload: false})
             }
         }
         , 500, false);
 
         handleNoteChange = function(text, id, tripid){
+            dispatch({type: Action.NoteLoading, payload: true});
             setText(text);
             doNoteSave(text, id, tripid);
         }
 
         handleDateChange = function(month, day, year, hour, min, half, tripid, id){
+            dispatch({type: Action.DateLoading, payload: true});
             doDateChange(month, day, year, hour, min, half, tripid, id);
+            setValidDate(true);
         }
 
         handleDepDateChange = function(month, day, year, hour, min, half, tripid, id){
+            dispatch({type: Action.DateLoading, payload: true});
             doDepDateChange(month, day, year, hour, min, half, tripid, id);
+            setValidDate(true);
         }
 
         function isSanitized(month, day, year, hour, min, half){
-            if(month && (month.length !== 2 || isNaN(month) || month <= 0 || month > 12 || month.indexOf('-') !== -1 || month.indexOf('.') !== -1 || month.indexOf(' ') !== -1)) {
-                console.log("month");
+            console.log(month);
+            if(!month || month === null || month.length !== 2 || isNaN(month) || month <= 0 || month > 12 || month.indexOf('-') !== -1 || month.indexOf('.') !== -1 || month.indexOf(' ') !== -1){
                 return false;
             }
-            if(year && (year.length !== 4 || isNaN(year) || year < 1000 || year.indexOf('-') !== -1 || year.indexOf('.') !== -1 || year.indexOf(' ') !== -1)) {
+            if(!year || year === null || year.length !== 4 || isNaN(year) || year < 1000 || year.indexOf('-') !== -1 || year.indexOf('.') !== -1 || year.indexOf(' ') !== -1) {
                 console.log("yearh");
                 return false;
             } 
-            if(hour && (hour.length !== 2 || isNaN(hour) || hour <= 0 || hour > 12 || hour.indexOf('-') !== -1 || hour.indexOf('.') !== -1 || hour.indexOf(' ') !== -1)) {
+            if(!hour || hour === '' || hour.length !== 2 || isNaN(hour) || hour <= 0 || hour > 12 || hour.indexOf('-') !== -1 || hour.indexOf('.') !== -1 || hour.indexOf(' ') !== -1) {
                 console.log("hour");
                 return false;
             }
-            if(min && (min.length !== 2 || isNaN(min) || min < 0 || min >= 60 || min.indexOf('-') !== -1 || min.indexOf('.') !== -1 || min.indexOf(' ') !== -1)) {
+            if(!min || min.length !== 2 || isNaN(min) || min < 0 || min >= 60 || min.indexOf('-') !== -1 || min.indexOf('.') !== -1 || min.indexOf(' ') !== -1) {
                 return false;
             }
-            if(day && (day.length !== 2 || isNaN(day) || day <= 0 || day > 31 || day.indexOf('-') !== -1 || day.indexOf('.') !== -1 || day.indexOf(' ') !== -1)) {
+            if(!day || day.length !== 2 || isNaN(day) || day <= 0 || day > 31 || day.indexOf('-') !== -1 || day.indexOf('.') !== -1 || day.indexOf(' ') !== -1) {
                 return false;
             }
-            if(half && (half !== "PM" && half !== "AM")){
+            if(!half || (half !== "PM" && half !== "AM")){
                 return false;
             }
             return true;
@@ -175,19 +193,19 @@ function Display(props){
     }
 
     function sanitizeDepDateInput(){
-        if(isNaN(depMonth) || depMonth <= 0 || depMonth > 12 || depMonth.indexOf(' ') !== -1 || depMonth.indexOf('-') !== -1 || depMonth.indexOf('.') !== -1) {
+        if(isNaN(depMonth) || depMonth <= 0 || depMonth > 12 || depMonth.indexOf(' ') !== -1 || depMonth.indexOf('-') !== -1 || depMonth.indexOf('.') !== -1 || depMonth.indexOf(' ') !== -1) {
             setDepMonth("01");
         } else{setDepMonth(depMonth => depMonth.padStart(2, '0'))}
-        if(isNaN(depYear) || depYear < 1000 || depYear.indexOf(' ') !== -1 || depYear.indexOf('-') !== -1 || depYear.indexOf('.') !== -1) {
+        if(isNaN(depYear) || depYear < 1000 || depYear.indexOf(' ') !== -1 || depYear.indexOf('-') !== -1 || depYear.indexOf('.') !== -1 || depYear.indexOf(' ') !== -1) {
             setDepYear("2020");
         } 
-        if(isNaN(depHour) || depHour <= 0 || depHour > 12 || depHour.indexOf(' ') !== -1 || depHour.indexOf('-') !== -1 || depHour.indexOf('.') !== -1) {
+        if(isNaN(depHour) || depHour <= 0 || depHour > 12 || depHour.indexOf(' ') !== -1 || depHour.indexOf('-') !== -1 || depHour.indexOf('.') !== -1 || depHour.indexOf(' ') !== -1) {
             setDepHour("01");
         } else{setDepHour(depHour => depHour.padStart(2, '0'))}
-        if(isNaN(depMin) || depMin < 0 || depMin >= 60 || depMin.indexOf(' ') !== -1 || depMin.indexOf('-') !== -1 || depMin.indexOf('.') !== -1) {
+        if(isNaN(depMin) || depMin < 0 || depMin >= 60 || depMin.indexOf(' ') !== -1 || depMin.indexOf('-') !== -1 || depMin.indexOf('.') !== -1 || depMin.indexOf(' ') !== -1) {
             setDepMin("00");
         } else{setDepMin(depMin => depMin.padStart(2, '0'))}
-        if(isNaN(depDay) || depDay <= 0 || depDay > 31 || depDay.indexOf(' ') !== -1 || depDay.indexOf('-') !== -1 || depDay.indexOf('.') !== -1) {
+        if(isNaN(depDay) || depDay <= 0 || depDay > 31 || depDay.indexOf(' ') !== -1 || depDay.indexOf('-') !== -1 || depDay.indexOf('.') !== -1 || depDay.indexOf(' ') !== -1) {
             setDepDay("01");
         } else{setDepDay(depDay => depDay.padStart(2, '0'))}
         if(depHalf.toUpperCase() !== "PM" && depHalf.toUpperCase() !== "AM"){
@@ -196,19 +214,19 @@ function Display(props){
     }
 
     function sanitizeDateInput(){
-        if(isNaN(month) || month <= 0 || month > 12 || month.indexOf(' ') !== -1 || month.indexOf('-') !== -1 || month.indexOf('.') !== -1) {
+        if(isNaN(month) || month <= 0 || month > 12 || month.indexOf(' ') !== -1 || month.indexOf('-') !== -1 || month.indexOf('.') !== -1 || month.indexOf(' ') !== -1) {
             setMonth("01");
         } else{setMonth(month => month.padStart(2, '0'))}
-        if(isNaN(year) || year < 1000 || year.indexOf(' ') !== -1 || year.indexOf('-') !== -1 || year.indexOf('.') !== -1) {
+        if(isNaN(year) || year < 1000 || year.indexOf(' ') !== -1 || year.indexOf('-') !== -1 || year.indexOf('.') !== -1 || year.indexOf(' ') !== -1) {
             setYear("2020");
         } 
-        if(isNaN(hour) || hour <= 0 || hour > 12 || hour.indexOf(' ') !== -1 || hour.indexOf('-') !== -1 || hour.indexOf('.') !== -1) {
+        if(isNaN(hour) || hour <= 0 || hour > 12 || hour.indexOf(' ') !== -1 || hour.indexOf('-') !== -1 || hour.indexOf('.') !== -1 || hour.indexOf(' ') !== -1) {
             setHour("01");
         } else{setHour(hour => hour.padStart(2, '0'))}
-        if(isNaN(min) || min < 0 || min >= 60 || min.indexOf(' ') !== -1 || min.indexOf('-') !== -1 || min.indexOf('.') !== -1) {
+        if(isNaN(min) || min < 0 || min >= 60 || min.indexOf(' ') !== -1 || min.indexOf('-') !== -1 || min.indexOf('.') !== -1 || min.indexOf(' ') !== -1) {
             setMin("00");
         } else{setMin(min => min.padStart(2, '0'))}
-        if(isNaN(day) || day <= 0 || day > 31 || day.indexOf(' ') !== -1 || day.indexOf('-') !== -1 || day.indexOf('.') !== -1) {
+        if(isNaN(day) || day <= 0 || day > 31 || day.indexOf(' ') !== -1 || day.indexOf('-') !== -1 || day.indexOf('.') !== -1 || day.indexOf(' ') !== -1) {
             setDay("01");
         } else{setDay(day => day.padStart(2, '0'))}
         if(half.toUpperCase() !== "PM" && half.toUpperCase() !== "AM"){
@@ -217,8 +235,8 @@ function Display(props){
     }
 
     
-    if(!showDestinationSelector && destination) return(
-        <div id="display" style={{left: `${left}px`}} onClick={handleClick} className="display">
+    if(destination && !destinationLoading) return(
+        <div id="display" style={{left: `${left}px`}} onClick={handleClick} className={showDestinationSelector ? "display-z" : "display"}>
                 <div className="display-header-container">
                     <div className="display-header-left">
                         {destination.fetchphotourl && destination.fetchphotourl !== "nophoto" &&
@@ -259,65 +277,40 @@ function Display(props){
                                     <input type="text" maxLength={2} className="date-input half" value={depHalf} 
                                     onChange={(e) => setDepHalf(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>
                                 </div>
+                                
                             </div>
-                        <div className="map-button"><a href={destination.url} target="_blank">Go to map</a></div>
+                            <div className="map-button"><a href={destination.url} target="_blank">Go to map</a>
+                                <div className = "date-loading-container">
+                                        {dateLoading &&
+                                            <Spinner small={true}/>
+                                        }
+                                        {!dateLoading && validDate &&
+                                            <FontAwesomeIcon className = "icon" color="white" icon={faCheck}/>
+                                        }
+                                        {!dateLoading && !validDate &&
+                                            <p>Invalid Date</p>
+                                        }
+                                </div>
+                            </div>
                         </div>     
             </div>
-            <div className="note-header" style={{bottom: `${height + 10}px`}}>Notes</div>
-            <textarea value={text} style={{height: `${height}px`}} maxLength="500" background-attachment="local" className="note-box" onChange={(e) => handleNoteChange(e.target.value, destination.id, destination.tripid)}></textarea>
-            
+            <div className="note-header" style={{bottom: `${height + 10}px`}}>Notes
+                        <div className="note-loading-container">
+                            {noteLoading &&
+                            <Spinner small={true}/>
+                            }
+                            {!noteLoading &&
+                                <FontAwesomeIcon className = "icon" color="white" icon={faCheck}/>
+                            }
+                        </div>
+            </div>
+            <textarea value={text} style={{height: `${height}px`}} maxLength="500" background-attachment="local" className="note-box" onChange={(e) => handleNoteChange(e.target.value, destination.id, destination.tripid)}></textarea>      
         </div>
     )
 
-    else if(showDestinationSelector && destination) return(
-        <div id="display" style={{left: `${left}px`}} onClick={handleClick} className="display-z">
-                <div className="display-header-container">
-                    <div className="display-header-left">
-                        {destination.fetchphotourl && destination.fetchphotourl !== "nophoto" &&
-                        <div id="photo" className="photo" style={{backgroundImage: `url(${destination.fetchphotourl})`,}}>
-                            <a href={destination.fetchphotourl} target="_blank"></a>
-                        </div>
-                        }
-                    </div>
-                        <div id="name" className="destination-name" style={{left: `calc(50% + ${right}px)`}}>{destination.name}
-                            <div className="arrival">Arrival: 
-                                <div className="date">
-                                    <input type="text" maxLength={2} className="date-input" value={month} 
-                                    onChange={(e) => setMonth(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>/
-                                    <input type="text" maxLength={2} className="date-input" value={day} 
-                                    onChange={(e) => setDay(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>/
-                                    <input type="text" maxLength={4} className="date-input year" value={year} 
-                                    onChange={(e) => setYear(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>&nbsp;
-                                    <input type="text" maxLength={2} className="date-input" value={hour} 
-                                    onChange={(e) => setHour(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>:
-                                    <input type="text" maxLength={2} className="date-input" value={min} 
-                                    onChange={(e) => setMin(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>&nbsp;
-                                    <input type="text" maxLength={2} className="date-input half" value={half} 
-                                    onChange={(e) => setHalf(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>
-                                </div>
-                            </div>
-                            <div className="departure">Departure: 
-                                <div className="date">
-                                    <input type="text" maxLength={2} className="date-input" value={depMonth} 
-                                    onChange={(e) => setDepMonth(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>/
-                                    <input type="text" maxLength={2} className="date-input" value={depDay} 
-                                    onChange={(e) => setDepDay(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>/
-                                    <input type="text" maxLength={4} className="date-input year" value={depYear} 
-                                    onChange={(e) => setDepYear(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>&nbsp;
-                                    <input type="text" maxLength={2} className="date-input" value={depHour} 
-                                    onChange={(e) => setDepHour(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>:
-                                    <input type="text" maxLength={2} className="date-input" value={depMin} 
-                                    onChange={(e) => setDepMin(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>&nbsp;
-                                    <input type="text" maxLength={2} className="date-input half" value={depHalf} 
-                                    onChange={(e) => setDepHalf(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>
-                                </div>
-                            </div>
-                        <div className="map-button"><a href={destination.url} target="_blank">Go to map</a></div>
-                        </div>     
-            </div>
-            <div className="note-header" style={{bottom: `${height + 10}px`}}>Notes</div>
-            <textarea value={text} style={{height: `${height}px`}} maxLength="500" background-attachment="local" className="note-box" onChange={(e) => handleNoteChange(e.target.value, destination.id, destination.tripid)}></textarea>
-            
+    else if(tripLoading) return(
+        <div className = "trip-loading-container">
+            <Spinner />
         </div>
     )
     
@@ -335,12 +328,22 @@ function Display(props){
         </div>
     )
 
+    
+    else if(destinationLoading){console.log("destination loading is up " + destinationLoading); return(
+        <div className="display" style={{left: `${left}px`}} onClick={handleClick}>
+             <div className = "display-loading-container">
+                <Spinner />
+            </div>
+        </div>
+    )}
+
     else return(
         <div className="display-only">
             <div className="title-header">Hello, {user.username}.</div>
             <div className="title-msg">Create a trip to get started.</div>
         </div>
     )
+
 }
 
 export default Display;

@@ -27,7 +27,13 @@ export const Action = Object.freeze({
     FocusDestination: "FocusDestination",
     FinishSavingNote: "FinishSavingNote",
     FinishChangingDate: "FinishChangingDate",
-    FinishChangingDepDate: "FinishChangingDepDate"
+    FinishChangingDepDate: "FinishChangingDepDate",
+    LoginLoading: "LoginLoading",
+    RegisterLoading: "RegisterLoading",
+    TripLoading: "TripLoading",
+    DateLoading: "DateLoading",
+    NoteLoading: "NoteLoading",
+    DestinationLoading: "DestinationLoading"
 });
 
 const host = "http://localhost:3444";
@@ -41,6 +47,7 @@ function checkForErrors(response){
 
 export function startLoggingIn(username, password){
     return dispatch => {
+        dispatch({type: Action.LoginLoading, payload: true});
         const options = {
             method: 'POST',
             headers: {
@@ -59,6 +66,7 @@ export function startLoggingIn(username, password){
         .catch(err => {
             console.error(err);
         })
+        .finally(() => dispatch({type: Action.LoginLoading, payload: false}));
     }
 }
 
@@ -111,6 +119,7 @@ export function goToMainPage(){
 
 export function startRegistering(username, password, email){
     return dispatch => {
+        dispatch({type: Action.RegisterLoading, payload: true});
         const options = {
             method: 'POST',
             headers: {
@@ -129,7 +138,10 @@ export function startRegistering(username, password, email){
             else{
                 console.error("Error registering.")
             }
-        });
+        })
+        .finally(()=> {
+            dispatch({type: Action.RegisterLoading, payload: false});
+        })
     }
 }
 
@@ -241,6 +253,7 @@ export function finishDeletingTrip(tripid){
 
 export function startSelectingTrip(trip){
     return dispatch => {
+        dispatch({type: Action.TripLoading, payload: true});
         fetch(`${host}/trip/${trip.id}`)
         .then(checkForErrors)
         .then(response => response.json())
@@ -252,6 +265,7 @@ export function startSelectingTrip(trip){
                 console.error("Error selecting trip.");
             }
         })
+        .finally(() => dispatch({type: Action.TripLoading, payload: false}))
     }
 }
 
@@ -366,6 +380,7 @@ export function unselectDestination(){
 
 export function createDestination(index, token, tripid, placeid, name){
     return dispatch => {
+        dispatch({type: Action.DestinationLoading, payload: true});
         const newName = name.substring(0, name.length - 5);
         const newToken = token;
         dispatch({type: Action.SetGoogleToken, payload: null});
@@ -386,7 +401,8 @@ export function createDestination(index, token, tripid, placeid, name){
             else{
                 console.error("Error adding destination");
             }
-        });
+        })
+        .finally(() => dispatch({type: Action.DestinationLoading, payload: false}));
     };
 };
 
@@ -399,6 +415,7 @@ export function finishCreatingDestination(id, url, fetchphotourl, index, tripid,
 
 export function startDeletingDestination(id, dindex, tripid){
     return dispatch => {
+        dispatch({type: Action.DestinationLoading, payload: true});
         const options = {
             method: "DELETE",
             headers: {
@@ -418,7 +435,8 @@ export function startDeletingDestination(id, dindex, tripid){
                 console.error("Could not delete destination");
             }
         })
-        .catch(err => console.error(err));
+        .catch(err => console.error(err))
+        .finally(() => dispatch({type: Action.DestinationLoading, payload: false}))
     }
 }
 
@@ -465,30 +483,34 @@ export function startSavingNote(text, id, tripid){
                 console.error("Could not save note");
             }
         })
+        .finally(() => dispatch({type: Action.NoteLoading, payload: false}))
     }
 }
 
 export function startChangingDate(month, day, year, hour, min, half, tripid, id){
     return dispatch => {
-        const options = {
-            method: "PATCH",
-            headers: {
-                "Content-Type" : "application/json",
-            },
-            body: JSON.stringify({month, day, year, hour, min, half})
-        }
-        fetch(`${host}/trip/${tripid}/destination/${id}/arrival`, options)
-        .then(checkForErrors)
-        .then(response => response.json())
-        .then(data => {
-            if(data.ok){
-                console.log("Date saved");
-                dispatch(finishChangingDate(month, day, year, hour, min, half, id));
+        setTimeout( () => {
+            const options = {
+                method: "PATCH",
+                headers: {
+                    "Content-Type" : "application/json",
+                },
+                body: JSON.stringify({month, day, year, hour, min, half})
             }
-            else{
-                console.error("Problem saving date");
-            }
-        })
+            fetch(`${host}/trip/${tripid}/destination/${id}/arrival`, options)
+            .then(checkForErrors)
+            .then(response => response.json())
+            .then(data => {
+                if(data.ok){
+                    console.log("Date saved");
+                    dispatch(finishChangingDate(month, day, year, hour, min, half, id));
+                }
+                else{
+                    console.error("Problem saving date");
+                }
+            })
+            .finally(() => dispatch({type: Action.DateLoading, payload: false}));
+        }, 1000);
     }
 }
 
@@ -513,6 +535,7 @@ export function startChangingDepDate(month, day, year, hour, min, half, tripid, 
                 console.error("Problem saving date");
             }
         })
+        .finally(() => dispatch({type: Action.DateLoading, payload: false}));
     }
 }
 

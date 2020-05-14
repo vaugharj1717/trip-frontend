@@ -2,7 +2,7 @@
     position: fixed;
     background-color: rgba(25, 25, 25, .8);
     width: calc(100% - 430px);
-    height: calc(100% - 100px);
+    height: calc(100% - 80px);
     min-width: 510px;
     min-height: 400px;
     margin-top: 70px;
@@ -17,7 +17,7 @@
     position: fixed;
     background-color: rgba(25, 25, 25, .8);
     width: calc(100% - 430px);
-    height: calc(100% - 100px);
+    height: calc(100% - 80px);
     min-height: 400px;
     min-width: 500px;
     margin-top: 70px;
@@ -108,6 +108,25 @@
   height: 220px;
 }
 
+.date-loading-container > p{
+  font-size: 10px;
+  position: relative;
+  left: -9px;
+  bottom: -2px;
+  color: #aaaaaa
+}
+
+.icon{
+  color: #aaaaaa;
+}
+
+.note-loading-container > p{
+  font-size: 10px;
+  position: relative;
+  bottom: 8px;
+  color: #aaaaaa
+}
+
 .display-header-left{
   width: 220px;
 }
@@ -145,6 +164,14 @@
     /* bottom: 432px; */
     left: 50%;
     transform: translateX(-50%);
+}
+
+.note-loading-container{
+  position: absolute;
+  left: calc(100% + 50px);
+  top: 50%;
+  transform: translateY(-35%);
+  width: 30px;
 }
 
 .note-header::after{
@@ -348,15 +375,23 @@
     position: absolute;
     cursor: pointer;
     left: 50%;
-    top: 125px;
+    top: 140px;
     transform: translateX(-50%);
     background-color: white;
-    padding: 12px;
+    padding: 5px;
     width: 180px;
     text-align: center;
     border-radius: 20px;
     opacity: .9;
     font-size: 18px;
+  }
+
+  .date-loading-container{
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 18px;
   }
 
   .map-button:after{
@@ -387,6 +422,22 @@
 
   .map-button:hover{
     opacity: 1;
+  }
+
+  .display-loading-container{
+    position: relative;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+  }
+
+  .trip-loading-container{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
   }
 
   @media only screen and (max-width: 1030px) {

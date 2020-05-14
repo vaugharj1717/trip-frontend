@@ -17,6 +17,7 @@ function Slider(props){
     const [selectionIndex, setSelectionIndex] = useState(-1);
     const showDestinationSelector = useSelector(state => state.showDestinationSelector);
     const currentTrip = useSelector(state => state.currentTrip);
+    
 
     function onAddDestinationSelect(i){
         if(i === selectionIndex && showDestinationSelector){
