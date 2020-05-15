@@ -90,19 +90,6 @@ export function goToLogin(){
     }
 }
 
-export function showDestinationSelect(index){
-    return {
-        type: Action.ShowDestinationSelect,
-        payload: index,
-    }
-}
-
-export function hideDestinationSelect(){
-    return{
-        type: hideDestinationSelect,
-    }
-}
-
 //User
 export function startLoggingIn(username, password){
     return dispatch => {
@@ -203,6 +190,7 @@ export function finishRegistering(username, id){
 
 export function startCreatingTrip(userid){
     return dispatch => {
+        dispatch({type: Action.TripLoading, payload: true});
         const options = {
             method: 'POST',
             headers: {
@@ -215,10 +203,14 @@ export function startCreatingTrip(userid){
         .then(response => response.json())
         .then(data => {
             if(data.ok){
+                dispatch({type: Action.TripLoading, payload: false});
                 dispatch(finishCreatingTrip(data.id));
             }
         })
-        .catch(err => console.error(err));
+        .catch(err => {
+            dispatch({type: Action.TripLoading, payload: false});
+            console.error(err);
+        })
     }
 }
 
@@ -233,6 +225,7 @@ export function finishCreatingTrip(id){
 
 export function startEditingTrip(tripid, newName){
     return dispatch => {
+        dispatch({type: Action.DestinationLoading, payload: true});
         const options = {
             method: "PATCH",
             headers: {
@@ -245,7 +238,11 @@ export function startEditingTrip(tripid, newName){
         .then(response => response.json())
         .then(data => {
             if (data.ok){
+                dispatch({type: Action.DestinationLoading, payload: false});
                 dispatch(finishEditingTrip(tripid, newName));
+            }
+            else{
+                dispatch({type: Action.DestinationLoading, payload: false});
             }
         })
     }
@@ -260,6 +257,7 @@ export function finishEditingTrip(id, newName){
 
 export function startDeletingTrip(tripid){
     return dispatch => {
+        dispatch({type: Action.TripLoading, payload: true});
         const options = {
             method: "DELETE",
             headers: {
@@ -272,9 +270,11 @@ export function startDeletingTrip(tripid){
         .then(result => result.json())
         .then(data => {
             if(data.ok){
+                dispatch({type: Action.TripLoading, payload: false});
                 dispatch(finishDeletingTrip(tripid));
             }
             else{
+                dispatch({type: Action.TripLoading, payload: false});
                 console.error("Error deleting trip");
             }
         })

@@ -13,7 +13,6 @@ function Slider(props){
     const dispatch = useDispatch();
     const destinations = props.destinations;
     destinations.sort((a, b) => a.dindex > b.dindex ? 1 : -1);
-    console.log(destinations);
     const [selectionIndex, setSelectionIndex] = useState(-1);
     const showDestinationSelector = useSelector(state => state.showDestinationSelector);
     const currentTrip = useSelector(state => state.currentTrip);
@@ -46,7 +45,7 @@ function Slider(props){
             {/*If a trip is selected with at least one destination, show first destination selector*/}
             {currentTrip && currentTrip.id && destinations.length === 0 &&
                 <div className="slider-destination-connector-only">
-                    <div className="slider-add-button slider-first" onClick={() => onAddDestinationSelect(0)}>
+                    <div className="slider-add-button slider-first" onClick={(e) => {onAddDestinationSelect(0); e.stopPropagation()}}>
                     {0 === selectionIndex && showDestinationSelector &&    
                         <SelectDestinationBox isFirst={true} index={0}/>
                     }
@@ -62,7 +61,7 @@ function Slider(props){
                             {/*For every destination box except for the last one*/}
                             {(i !== destinations.length - 1) &&
                                 <div className="slider-destination-connector">
-                                    <div className="slider-add-button" onClick={() => onAddDestinationSelect(i+1)}>
+                                    <div className="slider-add-button" onClick={(e) => {onAddDestinationSelect(i+1); e.stopPropagation()}}>
                                         {i + 1 === selectionIndex && showDestinationSelector &&
                                             <SelectDestinationBox index={i+1} isFirst={false}/>
                                         }
@@ -75,7 +74,7 @@ function Slider(props){
                             {/*For the final destination box, connect it to the final "Add Destination" button*/}
                             {(i === destinations.length - 1) &&   
                                 <div className="slider-destination-connector">
-                                    <div className="slider-add-button slider-last" onClick={() => {onAddDestinationSelect(i+1)}}>
+                                    <div className="slider-add-button slider-last" onClick={(e) => {onAddDestinationSelect(i+1); e.stopPropagation()}}>
                                         {i + 1 === selectionIndex && showDestinationSelector &&
                                             <SelectDestinationBox index={i+1} isFirst={false}/>
                                         }

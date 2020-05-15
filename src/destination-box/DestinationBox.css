@@ -28,6 +28,16 @@
     text-align: center;
 }
 
+.destination-box-departure-first{
+    position: absolute;
+    color: white;
+    top: 60px;
+    left: calc(50% - 12px);
+    transform: translateX(-50%);
+    width: 100%;
+    text-align: center;
+}
+
 
 .destination-box-name{
     position: absolute;

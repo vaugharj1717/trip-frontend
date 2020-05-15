@@ -86,6 +86,7 @@
     border: 1px solid white;
     text-align: center;
     background-color: black;
+    overflow-wrap: break-word;
 }
 
 .nav-dropdown-item:hover{

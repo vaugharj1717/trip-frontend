@@ -232,6 +232,7 @@ function reducer(state = initialState, action){
                 }), newDestination],
                 currentDestination: newDestination,
                 showDestinationSelector: false,
+                isEditingTrip: false,
                 guesses: [],
             };
 

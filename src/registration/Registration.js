@@ -22,7 +22,7 @@ function Registration(props){
         <div className="registration">
             <div className="registration-header">Register</div>
             <div className="registration-label username">Username</div>
-            <input type="text" className="registration-field field-username" maxLength={16} onChange={(e) => setUsername(e.target.value)}></input>
+            <input type="text" className="registration-field field-username" maxLength={14} onChange={(e) => setUsername(e.target.value)}></input>
             <div className="registration-label password">Password</div>
             <input type="password" className="registration-field field-password" onChange={(e) => setPassword(e.target.value)}></input>
             <div className="registration-label email">Email</div>

@@ -36,7 +36,7 @@ function DestinationBox(props){
                     {destination.arrival.month}/{destination.arrival.day}/{destination.arrival.year} &nbsp;{destination.arrival.hour}:{destination.arrival.min} {destination.arrival.half}
                 </div>
                 }
-                <div className="destination-box-departure">
+                <div className={i !== 0 ? "destination-box-departure" : "destination-box-departure-first"}>
                     Departure:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     {destination.departure.month}/{destination.departure.day}/{destination.departure.year} &nbsp;{destination.departure.hour}:{destination.departure.min} {destination.departure.half}
                 </div>

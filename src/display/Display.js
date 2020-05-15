@@ -69,8 +69,6 @@ function Display(props){
 
             let name; let photo;
             photo = document.getElementById('photo');
-            console.log(photo);
-            console.log(name);
             if(document.getElementById('name')) name = document.getElementById('name');
 
 
@@ -78,8 +76,8 @@ function Display(props){
             if(photo && name !== undefined && pageWidth < 1250 && pageWidth > 1000){
                 setRight((1250 - pageWidth) * .5);
             }
-            else if(photo && name !== undefined && pageWidth <= 1035 && pageWidth > 950) {console.log("2nd"); setRight(((1250 - pageWidth) * .5) - 35);}
-            else if(photo && pageWidth <= 950){console.log("3rd"); setRight(114);}
+            else if(photo && name !== undefined && pageWidth <= 1035 && pageWidth > 950) {setRight(((1250 - pageWidth) * .5) - 35);}
+            else if(photo && pageWidth <= 950){setRight(114);}
             else {setRight(0);}
         }
 
@@ -271,7 +269,6 @@ function Display(props){
                         {destination.fetchphotourl && destination.fetchphotourl !== "nophoto" &&
                         <div id="photo" className="photo" style={{backgroundImage: `url(${destination.fetchphotourl})`,}}>
                             <a href={destination.fetchphotourl} target="_blank" rel="noopener noreferrer" alt={"Destination Photo"}><span className="alt-text">Destination Photo</span></a>
-                            {console.log("Photo id created")}
                         </div>
                         }
                     </div>
@@ -279,6 +276,7 @@ function Display(props){
                         {/*Name, Date, and Map Button*/}
                         <div id="name" className="destination-name" style={{left: `calc(50% + ${right}px)`}}>{destination.name}
                             {/*Arrival Date Form*/}
+                            {destination && destination.dindex !== 0 && //Only show if it isn't origin destination
                             <div className="arrival">Arrival: 
                                 <div className="date">
                                     <input type="text" maxLength={2} className="date-input" value={month} 
@@ -295,9 +293,10 @@ function Display(props){
                                     onChange={(e) => setHalf(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>
                                 </div>
                             </div>
+                            }
 
                             {/*Departure Date Form*/}
-                            <div className="departure">Departure: 
+                            <div className={destination && destination.dindex !== 0 ? "departure" : "departure-only"}>Departure: 
                                 <div className="date">
                                     <input type="text" maxLength={2} className="date-input" value={depMonth} 
                                     onChange={(e) => setDepMonth(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>/
@@ -315,17 +314,18 @@ function Display(props){
                             </div>
 
                             {/*Map and Loading Indicator*/}
-                            <div className="map-button"><a href={destination.url} target="_blank" rel="noopener noreferrer">Go to map</a>
+                            <div className={destination && destination.dindex !== 0 ? "map-button" : "map-button-only"}
+                                ><a href={destination.url} target="_blank" rel="noopener noreferrer">Go to map</a>
                                 <div className = "date-loading-container">
-                                        {dateLoading &&
-                                            <Spinner small={true}/>
-                                        }
-                                        {!dateLoading && validDate &&
-                                            <FontAwesomeIcon className = "icon" color="white" icon={faCheck}/>
-                                        }
-                                        {!dateLoading && !validDate &&
-                                            <p>Invalid Date</p>
-                                        }
+                                    {dateLoading &&
+                                        <Spinner small={true}/>
+                                    }
+                                    {!dateLoading && validDate &&
+                                        <FontAwesomeIcon className = "icon" color="white" icon={faCheck}/>
+                                    }
+                                    {!dateLoading && !validDate &&
+                                        <p>Invalid Date</p>
+                                    }
                                 </div>
                             </div>
                         </div>     

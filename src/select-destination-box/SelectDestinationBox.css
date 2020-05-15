@@ -72,6 +72,7 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
+    z-index: 5;
 }
 
 .autocomplete-guess{
@@ -83,7 +84,7 @@
     min-height: 25px;
     padding: 5px 0;
     background-color: white;
-    z-index: 3;
+    z-index: 5;
 }
 
 .create-button{

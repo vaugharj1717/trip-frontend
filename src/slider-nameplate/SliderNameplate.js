@@ -27,7 +27,7 @@ function SliderNameplate(props){
         <div className = "slider-nameplate">
         {isEditing && 
             <div className = "change-name-container">
-                <input type="text" placeholder={tripName} onChange={(e) => setName(e.target.value)}></input>
+                <input type="text" placeholder={tripName} maxLength={40} onChange={(e) => setName(e.target.value)}></input>
                 <button className="cancel-button" onClick={toggleEdit}><FontAwesomeIcon icon={faCaretLeft}/></button>
                 <button className="save-button" onClick={onTripEdit}><FontAwesomeIcon icon={faSave}/></button>
                 <button className="delete-button" onClick={onTripDelete}><FontAwesomeIcon icon={faTrash}/></button>
