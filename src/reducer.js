@@ -209,15 +209,14 @@ function reducer(state = initialState, action){
                 selectedDestination: null,
             };
 
-            case Action.FinishCreatingDestination:
+        case Action.FinishCreatingDestination:
 
             //create new destination object
-            const newDestination = {id: action.payload.id, url: action.payload.url, fetchphotourl: action.payload.fetchphotourl, dindex: action.payload.dindex, tripid: action.payload.tripid, placeid: action.payload.placeid, name: action.payload.name, dur: action.payload.durdist2.dur, dist: action.payload.durdist2.dist, utcoffset: action.payload.utcoffset, arrival: action.payload.arrival, departure: action.payload.departure};
+            const newDestination = {id: action.payload.id, url: action.payload.url, fetchphotourl: action.payload.fetchphotourl, dindex: action.payload.dindex, text: "", tripid: action.payload.tripid, placeid: action.payload.placeid, name: action.payload.name, dur: action.payload.durdist2.dur, dist: action.payload.durdist2.dist, utcoffset: action.payload.utcoffset, arrival: action.payload.arrival, departure: action.payload.departure};
 
             return{
                 ...state,
                 destinations: [...state.destinations.map(d => {
-                    console.log(d.dindex);
                     //bump up destinations one index that are after new one
                     if(d.dindex >= action.payload.dindex){
                         return {...d, dindex: d.dindex + 1}
@@ -237,13 +236,16 @@ function reducer(state = initialState, action){
             };
 
         case Action.FinishDeletingDestination:
-
             //delete destination
             const filteredDestinations = state.destinations.filter(d => d.id !== action.payload.id);
-            //edit duration and distance of dependent destinations
+           
+            //edit duration, distance, and indexes of dependent destinations
             const newDestinations = filteredDestinations.map(d => {
+                //if index is higher than deleted index, reduce it's index
                 if(d.dindex > action.payload.dindex) return {...d, dindex: d.dindex - 1}
-                else if(d.dindex == action.payload.dindex - 1) return {...d, dur: action.payload.durdist.dur, dist: action.payload.durdist.dist}
+                //if destination is previous destination of deleted destinatoin, update it's duration and distance
+                else if(d.dindex === action.payload.dindex - 1) return {...d, dur: action.payload.durdist.dur, dist: action.payload.durdist.dist}
+                else return d;
             });
             return{
                 ...state,
@@ -259,7 +261,6 @@ function reducer(state = initialState, action){
             };
 
         case Action.FocusDestination:
-            console.log(action.payload);
             return{
                 ...state,
                 currentDestination: action.payload,

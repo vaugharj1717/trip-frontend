@@ -15,6 +15,7 @@ let handleDepDateChange;
 function Display(props){
     const dispatch = useDispatch();
     const destination = props.currentDestination;
+    // const destination = useSelector(state => state.currentDestination);
     const trip = props.currentTrip;
     const showDestinationSelector = useSelector(state => state.showDestinationSelector);
     const user = useSelector(state => state.user);
@@ -59,7 +60,6 @@ function Display(props){
             if(pageHeight < 815 && pageHeight > 500){
                 //for every 40px, remove 40px from note (to maintain text position on background linear gradient)
                 const numRows = Math.floor((730 - pageHeight) / 38);
-                console.log(`${numRows} numrows`);
                 setHeight(notesHeight - (38 * numRows));
             }
                 //min height for note area
@@ -69,17 +69,18 @@ function Display(props){
 
             let name; let photo;
             photo = document.getElementById('photo');
+            console.log(photo);
+            console.log(name);
             if(document.getElementById('name')) name = document.getElementById('name');
+
 
             //prevent name of destination from colliding with photo
             if(photo && name !== undefined && pageWidth < 1250 && pageWidth > 1000){
                 setRight((1250 - pageWidth) * .5);
             }
-            else if(photo && name !== undefined && pageWidth <= 1035 && pageWidth > 950) setRight(((1250 - pageWidth) * .5) - 35);
-            else if(photo && pageWidth <= 950) setRight(114);
-            else setRight(0);
-            
-            
+            else if(photo && name !== undefined && pageWidth <= 1035 && pageWidth > 950) {console.log("2nd"); setRight(((1250 - pageWidth) * .5) - 35);}
+            else if(photo && pageWidth <= 950){console.log("3rd"); setRight(114);}
+            else {setRight(0);}
         }
 
         //handler for scroll events
@@ -102,6 +103,7 @@ function Display(props){
         }
         
     }, [destination]);
+
 
     //initialize date when new destination is selected
     useEffect( () => {
@@ -173,16 +175,13 @@ function Display(props){
 
         //check if date input is sanitized
         function isSanitized(month, day, year, hour, min, half){
-            console.log(month);
             if(!month || month === null || month.length !== 2 || isNaN(month) || month <= 0 || month > 12 || month.indexOf('-') !== -1 || month.indexOf('.') !== -1 || month.indexOf(' ') !== -1){
                 return false;
             }
             if(!year || year === null || year.length !== 4 || isNaN(year) || year < 1000 || year.indexOf('-') !== -1 || year.indexOf('.') !== -1 || year.indexOf(' ') !== -1) {
-                console.log("yearh");
                 return false;
             } 
             if(!hour || hour === '' || hour.length !== 2 || isNaN(hour) || hour <= 0 || hour > 12 || hour.indexOf('-') !== -1 || hour.indexOf('.') !== -1 || hour.indexOf(' ') !== -1) {
-                console.log("hour");
                 return false;
             }
             if(!min || min.length !== 2 || isNaN(min) || min < 0 || min >= 60 || min.indexOf('-') !== -1 || min.indexOf('.') !== -1 || min.indexOf(' ') !== -1) {
@@ -271,7 +270,8 @@ function Display(props){
                         {/*Photo*/}
                         {destination.fetchphotourl && destination.fetchphotourl !== "nophoto" &&
                         <div id="photo" className="photo" style={{backgroundImage: `url(${destination.fetchphotourl})`,}}>
-                            <a href={destination.fetchphotourl} target="_blank"></a>
+                            <a href={destination.fetchphotourl} target="_blank" rel="noopener noreferrer" alt={"Destination Photo"}><span className="alt-text">Destination Photo</span></a>
+                            {console.log("Photo id created")}
                         </div>
                         }
                     </div>
@@ -315,7 +315,7 @@ function Display(props){
                             </div>
 
                             {/*Map and Loading Indicator*/}
-                            <div className="map-button"><a href={destination.url} target="_blank">Go to map</a>
+                            <div className="map-button"><a href={destination.url} target="_blank" rel="noopener noreferrer">Go to map</a>
                                 <div className = "date-loading-container">
                                         {dateLoading &&
                                             <Spinner small={true}/>
@@ -373,13 +373,13 @@ function Display(props){
     )
 
     //Display when destination is loading
-    else if(destinationLoading){console.log("destination loading is up " + destinationLoading); return(
+    else if(destinationLoading) return(
         <div className="display" style={{left: `${left}px`}} onClick={handleClick}>
              <div className = "display-loading-container">
                 <Spinner />
             </div>
         </div>
-    )}
+    )
 
     //display when trip isn't selected
     else return(

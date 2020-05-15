@@ -21,11 +21,13 @@
 }
 
 .username{
+    cursor: default;
     top: 44px;
     color: white;
 }
 
 .password{
+    cursor: default;
     top: 94px;
     color: white;
 }
@@ -53,6 +55,7 @@
 }
 
 .login-header{
+    cursor: default;
     color: white;
     top: 2px;
     font-size: 25px;
@@ -71,6 +74,7 @@
 }
 
 .login-error{
+    cursor: default;
     position: absolute;
     left: 50%;
     top: 200px;

@@ -35,6 +35,7 @@
 }
 
 .nav-logo{
+    cursor: default;
     margin-left: 110px;
     font-size: 30px;
     font-family: Candara;

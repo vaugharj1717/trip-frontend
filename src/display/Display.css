@@ -162,9 +162,12 @@
     font-family: Candara;
 }
 
-
+.alt-text{
+  display: none;
+}
 
 .note-header{
+    cursor: default;
     font-family: Candara;
     position: relative;
     font-size: 22px;

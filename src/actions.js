@@ -118,18 +118,14 @@ export function startLoggingIn(username, password){
         .then(checkForErrors)
         .then(response => response.json())
         .then(data => {
-            console.log("HERE")
             if(data.ok && data.success){
-                console.log("EE")
                 dispatch(finishLoggingIn(data.userid, data.username, data.trips));
             }
             else{
-                console.log("MMM")
                 dispatch({type: Action.LoginError});
             }
         })
         .catch(err => {
-            console.log("MMMM")
             dispatch({type: Action.LoginError});
         })
         .finally(() => dispatch({type: Action.LoginLoading, payload: false}));
@@ -428,13 +424,14 @@ export function createDestination(index, token, tripid, placeid, name){
         .then(result => result.json())
         .then(data => {
             if(data.ok){
+                dispatch({type: Action.DestinationLoading, payload: false});
                 dispatch(finishCreatingDestination(data.id, data.url, data.fetchphotourl, index, tripid, placeid, newName, data.durdist1, data.durdist2, data.utcoffset, data.arrival, data.departure));
             }
             else{
+                dispatch({type: Action.DestinationLoading, payload: false});
                 console.error("Error adding destination");
             }
         })
-        .finally(() => dispatch({type: Action.DestinationLoading, payload: false}));
     };
 };
 
@@ -509,7 +506,6 @@ export function startSavingNote(text, id, tripid){
         .then(data => {
             if(data.ok){
                 dispatch(finishSavingNote(text, id));
-                console.log("note saved");
             }
             else{
                 console.error("Could not save note");
@@ -534,7 +530,6 @@ export function startChangingDate(month, day, year, hour, min, half, tripid, id)
             .then(response => response.json())
             .then(data => {
                 if(data.ok){
-                    console.log("Date saved");
                     dispatch(finishChangingDate(month, day, year, hour, min, half, id));
                 }
                 else{
@@ -560,7 +555,6 @@ export function startChangingDepDate(month, day, year, hour, min, half, tripid, 
         .then(response => response.json())
         .then(data => {
             if(data.ok){
-                console.log("Date saved");
                 dispatch(finishChangingDepDate(month, day, year, hour, min, half, id));
             }
             else{
