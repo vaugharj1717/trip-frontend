@@ -7,6 +7,7 @@ import Spinner from '../spinner/Spinner.js';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+//handler methods
 let handleNoteChange;
 let handleDateChange;
 let handleDepDateChange;
@@ -17,6 +18,8 @@ function Display(props){
     const trip = props.currentTrip;
     const showDestinationSelector = useSelector(state => state.showDestinationSelector);
     const user = useSelector(state => state.user);
+
+    //initial dates
     const [month, setMonth] = useState("01");
     const [day, setDay] = useState("01");   
     const [year, setYear] = useState("2020"); 
@@ -30,36 +33,45 @@ function Display(props){
     const [depHour, setDepHour] = useState("12");
     const [depMin, setDepMin] = useState("00");
     const [depHalf, setDepHalf] = useState("AM");
+
+    //setters for positioning purposes
     const [left, setLeft] = useState(400);
     const [height, setHeight] = useState(400);
     const [right, setRight] = useState(0);
+
+    //date validator
     const [validDate, setValidDate] = useState(true);
+
+    //hooks for loading states
     const destinationLoading = useSelector(state => state.destinationLoading);
     const tripLoading = useSelector(state => state.tripLoading);
     const noteLoading = useSelector(state => state.noteLoading);
     const dateLoading = useSelector(state => state.dateLoading);
 
     
-
+    //handler for resizing and scroll events
     useEffect( () => {
+        //handler for resize events
         function handleResize(){
             const pageHeight = window.innerHeight;
             const pageWidth = window.innerWidth;
             const notesHeight = 350;
             if(pageHeight < 815 && pageHeight > 500){
-                //for every 40px, remove 40px
+                //for every 40px, remove 40px from note (to maintain text position on background linear gradient)
                 const numRows = Math.floor((730 - pageHeight) / 38);
                 console.log(`${numRows} numrows`);
                 setHeight(notesHeight - (38 * numRows));
             }
+                //min height for note area
             else if(pageHeight <= 500){
                 setHeight(156);
             }
 
-            let name;
-            let photo;
+            let name; let photo;
             photo = document.getElementById('photo');
             if(document.getElementById('name')) name = document.getElementById('name');
+
+            //prevent name of destination from colliding with photo
             if(photo && name !== undefined && pageWidth < 1250 && pageWidth > 1000){
                 setRight((1250 - pageWidth) * .5);
             }
@@ -70,7 +82,9 @@ function Display(props){
             
         }
 
+        //handler for scroll events
         function handleScroll(){
+            //allow Display to be scrollable left-to-right (while remaining fixed top-to-bottom)
             const left = document.documentElement.scrollLeft;
             setLeft(400 - left);
         }
@@ -81,6 +95,7 @@ function Display(props){
         handleResize();
         handleScroll();
 
+        //cleanup function, remove event listeners
         return ()=>{
             window.removeEventListener('scroll', handleScroll);
             window.removeEventListener('resize', handleResize)
@@ -88,6 +103,7 @@ function Display(props){
         
     }, [destination]);
 
+    //initialize date when new destination is selected
     useEffect( () => {
         const initArrival = (destination && destination.arrival) ? destination.arrival : {month: "01", day: "01", year: "2020", hour: "12", min: "00", half: "AM"};
         const initDeparture = (destination && destination.departure) ? destination.departure : {month: "01", day: "01", year: "2020", hour: "12", min: "00", half: "AM"};
@@ -102,12 +118,15 @@ function Display(props){
         setValidDate(true);
     }, [destination]);
 
-
+    //handle changes to date or note by user
     useEffect(() => {
+
+        //create debounced method for saving notes
         const doNoteSave = debounce((text, id, tripid) => {
             dispatch(startSavingNote(text, id, tripid));
         }, 1000, false);
 
+        //create debounced method for saving arrival time
         const doDateChange = debounce((month, day, year, hour, min, half, tripid, id) => {
             if(isSanitized(month, day, year, hour, min, half)){
                 dispatch(startChangingDate(month, day, year, hour, min, half, tripid, id));
@@ -119,6 +138,7 @@ function Display(props){
         }
         , 500, false);
 
+        //create debounced method for saving departure time
         const doDepDateChange = debounce((month, day, year, hour, min, half, tripid, id) => {
             if(isSanitized(month, day, year, hour, min, half)){
                 dispatch(startChangingDepDate(month, day, year, hour, min, half, tripid, id));
@@ -130,24 +150,28 @@ function Display(props){
         }
         , 500, false);
 
+        //when change is made to note, show loading indicator and call debounce method
         handleNoteChange = function(text, id, tripid){
             dispatch({type: Action.NoteLoading, payload: true});
             setText(text);
             doNoteSave(text, id, tripid);
         }
 
+        //when change is made to arrival date, show loading indicator and call debounce method
         handleDateChange = function(month, day, year, hour, min, half, tripid, id){
             dispatch({type: Action.DateLoading, payload: true});
             doDateChange(month, day, year, hour, min, half, tripid, id);
             setValidDate(true);
         }
 
+        //when change is made to departure date, show loading indicator and call debounce method
         handleDepDateChange = function(month, day, year, hour, min, half, tripid, id){
             dispatch({type: Action.DateLoading, payload: true});
             doDepDateChange(month, day, year, hour, min, half, tripid, id);
             setValidDate(true);
         }
 
+        //check if date input is sanitized
         function isSanitized(month, day, year, hour, min, half){
             console.log(month);
             if(!month || month === null || month.length !== 2 || isNaN(month) || month <= 0 || month > 12 || month.indexOf('-') !== -1 || month.indexOf('.') !== -1 || month.indexOf(' ') !== -1){
@@ -172,9 +196,9 @@ function Display(props){
             }
             return true;
         }
-
     }, [dispatch]);
 
+    //call date change handlers when change is made to dates
     useEffect(() => {
         if(destination){
             handleDateChange(month, day, year, hour, min, half, destination.tripid, destination.id);
@@ -187,11 +211,13 @@ function Display(props){
         }
     }, [depMonth, depDay, depYear, depHour, depMin, depHalf, destination]);
 
+    //when user clicks on display area, automatically sanitize date input
     function handleClick(){
         sanitizeDateInput();
         sanitizeDepDateInput();
     }
 
+    //sanitize date input
     function sanitizeDepDateInput(){
         if(isNaN(depMonth) || depMonth <= 0 || depMonth > 12 || depMonth.indexOf(' ') !== -1 || depMonth.indexOf('-') !== -1 || depMonth.indexOf('.') !== -1 || depMonth.indexOf(' ') !== -1) {
             setDepMonth("01");
@@ -213,6 +239,7 @@ function Display(props){
         } else{setDepHalf(depHalf => depHalf.toUpperCase())}
     }
 
+    //sanitize date input
     function sanitizeDateInput(){
         if(isNaN(month) || month <= 0 || month > 12 || month.indexOf(' ') !== -1 || month.indexOf('-') !== -1 || month.indexOf('.') !== -1 || month.indexOf(' ') !== -1) {
             setMonth("01");
@@ -234,18 +261,24 @@ function Display(props){
         } else{setHalf(half => half.toUpperCase())}
     }
 
-    
+    //Display when destination is selected
     if(destination && !destinationLoading) return(
         <div id="display" style={{left: `${left}px`}} onClick={handleClick} className={showDestinationSelector ? "display-z" : "display"}>
+
+                {/*Header*/}
                 <div className="display-header-container">
                     <div className="display-header-left">
+                        {/*Photo*/}
                         {destination.fetchphotourl && destination.fetchphotourl !== "nophoto" &&
                         <div id="photo" className="photo" style={{backgroundImage: `url(${destination.fetchphotourl})`,}}>
                             <a href={destination.fetchphotourl} target="_blank"></a>
                         </div>
                         }
                     </div>
+
+                        {/*Name, Date, and Map Button*/}
                         <div id="name" className="destination-name" style={{left: `calc(50% + ${right}px)`}}>{destination.name}
+                            {/*Arrival Date Form*/}
                             <div className="arrival">Arrival: 
                                 <div className="date">
                                     <input type="text" maxLength={2} className="date-input" value={month} 
@@ -262,6 +295,8 @@ function Display(props){
                                     onChange={(e) => setHalf(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>
                                 </div>
                             </div>
+
+                            {/*Departure Date Form*/}
                             <div className="departure">Departure: 
                                 <div className="date">
                                     <input type="text" maxLength={2} className="date-input" value={depMonth} 
@@ -277,8 +312,9 @@ function Display(props){
                                     <input type="text" maxLength={2} className="date-input half" value={depHalf} 
                                     onChange={(e) => setDepHalf(e.target.value)} onClick={(e) => {if(e.target === document.activeElement) e.stopPropagation()}}></input>
                                 </div>
-                                
                             </div>
+
+                            {/*Map and Loading Indicator*/}
                             <div className="map-button"><a href={destination.url} target="_blank">Go to map</a>
                                 <div className = "date-loading-container">
                                         {dateLoading &&
@@ -294,6 +330,8 @@ function Display(props){
                             </div>
                         </div>     
             </div>
+
+            {/*Note Header*/}
             <div className="note-header" style={{bottom: `${height + 10}px`}}>Notes
                         <div className="note-loading-container">
                             {noteLoading &&
@@ -304,16 +342,21 @@ function Display(props){
                             }
                         </div>
             </div>
-            <textarea value={text} style={{height: `${height}px`}} maxLength="500" background-attachment="local" className="note-box" onChange={(e) => handleNoteChange(e.target.value, destination.id, destination.tripid)}></textarea>      
+            {/*Note TextBox*/}
+            <textarea value={text} style={{height: `${height}px`}} maxLength="500" background-attachment="local" className="note-box" 
+                onChange={(e) => handleNoteChange(e.target.value, destination.id, destination.tripid)}>
+            </textarea>      
         </div>
     )
 
+    //Display when trip is loading
     else if(tripLoading) return(
         <div className = "trip-loading-container">
             <Spinner />
         </div>
     )
     
+    //Display when destination isn't selected
     else if(trip && !destination) return(
         <div id="display" style={{left: `${left}px`}} className="display-z">
                 <div className="no-dest-header">No Destination Selected</div>
@@ -321,6 +364,7 @@ function Display(props){
         </div>
     )
 
+    //Display when not logged in
     else if(!user.isLoggedIn) return(
         <div className="display-only">
             <div className="title-header">Trip Maker</div>
@@ -328,7 +372,7 @@ function Display(props){
         </div>
     )
 
-    
+    //Display when destination is loading
     else if(destinationLoading){console.log("destination loading is up " + destinationLoading); return(
         <div className="display" style={{left: `${left}px`}} onClick={handleClick}>
              <div className = "display-loading-container">
@@ -337,10 +381,11 @@ function Display(props){
         </div>
     )}
 
+    //display when trip isn't selected
     else return(
         <div className="display-only">
-            <div className="title-header">Hello, {user.username}.</div>
-            <div className="title-msg">Create a trip to get started.</div>
+            <div className="greeting">Hello, {user.username}.</div>
+            <div className="title-msg">Create or select a trip to get started.</div>
         </div>
     )
 

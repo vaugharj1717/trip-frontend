@@ -4,6 +4,7 @@ import './Spinner.css';
 function Spinner(props){
     const small = props.small ? true : false;
 
+    //for big spinner
     if(!small) return(
         <div className = "spinner">
             <div className = "outer">
@@ -18,6 +19,7 @@ function Spinner(props){
         </div>
     )
 
+    //for small spinner
     else return(
         <div className = "spinner">
             <div className = "outer small">

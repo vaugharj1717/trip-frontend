@@ -1,26 +1,36 @@
 export const Action = Object.freeze({
-    FinishCreatingTrip: "FinishCreatingTrip",
+    //Navigation
+    DoDropdown: "DoDropdown",
+    StopDropdown: "StopDrodown",
+    GoToRegistration: "GoToRegistration",
+    GoToMainPage: "GoToMainPage",
+    GoToLogin: "GoToLogin",
+
+    //Loading
+    LoginLoading: "LoginLoading",
+    RegisterLoading: "RegisterLoading",
+    TripLoading: "TripLoading",
+    DateLoading: "DateLoading",
+    NoteLoading: "NoteLoading",
+    DestinationLoading: "DestinationLoading",
+    ShowDestinationSelect: "ShowDestinationSelect",
+    HideDestinationSelect: "HideDestinationSelect",
+
+    //User
     FinishLoggingIn: "FinishLoggingIn",
     FinishLoggingOut: "FinishLoggingOut",
     FinishRegistering: "FinishRegistering",
-    GoToRegistration: "GoToRegistration",
-    GoToMainPage: "GoToMainPage",
-    ShowDestinationSelect: "ShowDestinationSelect",
-    HideDestinationSelect: "HideDestinationSelect",
-    GoToLogin: "GoToLogin",
+
+    //Trips
+    FinishCreatingTrip: "FinishCreatingTrip",
     FinishEditingTrip: "FinishEditingTrip",
     FinishDeletingTrip: "FinishDeletingTrip",
     FinishSelectingTrip: "FinishSelectingTrip",
     ToggleEditingTrips: "ToggleEditingTrips",
-    DoDropdown: "DoDropdown",
-    StopDropdown: "StopDrodown",
-    SetGoogleToken: "SetGoogleToken",
-    SetGettingGoogleToken: "SetGettingGoogleToken",
-    FinishAutoCompleting: "FinishAutoCompleting",
-    ClearGuesses: "ClearGuesses",
+
+    //Destination
     SelectDestination: "SelectDestination",
     UnselectDestination: "UnselectDestination",
-    LoadGoogleAPI: "LoadGoogleAPI",
     FinishCreatingDestination: "FinishCreatingDestination",
     FinishDeletingDestination: "FinishDeletingDestination",
     SetShowDestinationSelector: "SetShowDestinationSelector",
@@ -28,12 +38,16 @@ export const Action = Object.freeze({
     FinishSavingNote: "FinishSavingNote",
     FinishChangingDate: "FinishChangingDate",
     FinishChangingDepDate: "FinishChangingDepDate",
-    LoginLoading: "LoginLoading",
-    RegisterLoading: "RegisterLoading",
-    TripLoading: "TripLoading",
-    DateLoading: "DateLoading",
-    NoteLoading: "NoteLoading",
-    DestinationLoading: "DestinationLoading"
+
+    //Google Session Mgmt
+    SetGoogleToken: "SetGoogleToken",
+    SetGettingGoogleToken: "SetGettingGoogleToken",
+    FinishAutoCompleting: "FinishAutoCompleting",
+    ClearGuesses: "ClearGuesses",
+
+    //Error Cases
+    LoginError: "LoginError",
+    RegisterError: "RegisterError",
 });
 
 const host = "http://localhost:3444";
@@ -45,6 +59,51 @@ function checkForErrors(response){
     return response;
 }
 
+//Navigation
+export function doDropdown(){
+    return {
+        type: Action.DoDropdown
+    }
+}
+
+export function stopDropdown(){
+    return {
+        type: Action.StopDropdown
+    }
+}
+
+export function goToRegistration(){
+    return {
+        type: Action.GoToRegistration
+    }
+}
+
+export function goToMainPage(){
+    return {
+        type: Action.GoToMainPage
+    }
+}
+
+export function goToLogin(){
+    return {
+        type: Action.GoToLogin
+    }
+}
+
+export function showDestinationSelect(index){
+    return {
+        type: Action.ShowDestinationSelect,
+        payload: index,
+    }
+}
+
+export function hideDestinationSelect(){
+    return{
+        type: hideDestinationSelect,
+    }
+}
+
+//User
 export function startLoggingIn(username, password){
     return dispatch => {
         dispatch({type: Action.LoginLoading, payload: true});
@@ -59,22 +118,25 @@ export function startLoggingIn(username, password){
         .then(checkForErrors)
         .then(response => response.json())
         .then(data => {
+            console.log("HERE")
             if(data.ok && data.success){
-                dispatch(finishLoggingIn(data.userid, data.username, data.trips))
+                console.log("EE")
+                dispatch(finishLoggingIn(data.userid, data.username, data.trips));
+            }
+            else{
+                console.log("MMM")
+                dispatch({type: Action.LoginError});
             }
         })
         .catch(err => {
-            console.error(err);
+            console.log("MMMM")
+            dispatch({type: Action.LoginError});
         })
         .finally(() => dispatch({type: Action.LoginLoading, payload: false}));
     }
 }
 
-export function goToLogin(){
-    return {
-        type: Action.GoToLogin
-    }
-}
+
 
 export function finishLoggingIn(userid, username, trips){
     return {
@@ -105,18 +167,6 @@ export function finishLoggingOut(){
     }
 }
 
-export function goToRegistration(){
-    return {
-        type: Action.GoToRegistration
-    }
-}
-
-export function goToMainPage(){
-    return {
-        type: Action.GoToMainPage
-    }
-}
-
 export function startRegistering(username, password, email){
     return dispatch => {
         dispatch({type: Action.RegisterLoading, payload: true});
@@ -136,7 +186,7 @@ export function startRegistering(username, password, email){
                 dispatch(finishRegistering(username, data.id));
             }
             else{
-                console.error("Error registering.")
+                dispatch(Action.RegisterError);
             }
         })
         .finally(()=> {
@@ -152,6 +202,8 @@ export function finishRegistering(username, id){
     }
 }
 
+
+//Trips
 
 export function startCreatingTrip(userid){
     return dispatch => {
@@ -174,18 +226,7 @@ export function startCreatingTrip(userid){
     }
 }
 
-export function showDestinationSelect(index){
-    return {
-        type: Action.ShowDestinationSelect,
-        payload: index,
-    }
-}
 
-export function hideDestinationSelect(){
-    return{
-        type: hideDestinationSelect,
-    }
-}
 
 export function finishCreatingTrip(id){
     return {
@@ -254,7 +295,7 @@ export function finishDeletingTrip(tripid){
 export function startSelectingTrip(trip){
     return dispatch => {
         dispatch({type: Action.TripLoading, payload: true});
-        fetch(`${host}/trip/${trip.id}`)
+        fetch(`${host}/trip/${trip.id}/destination`)
         .then(checkForErrors)
         .then(response => response.json())
         .then(data => {
@@ -283,18 +324,7 @@ export function finishSelectingTrip(trip, destinations){
     }
 }
 
-export function doDropdown(){
-    return {
-        type: Action.DoDropdown
-    }
-}
-
-export function stopDropdown(){
-    return {
-        type: Action.StopDropdown
-    }
-}
-
+//Google Session Mgmt
 export function startAutoCompleteSession(userid){
     return dispatch =>{
         dispatch({
@@ -364,6 +394,8 @@ export function clearGuesses(){
         type: Action.ClearGuesses,
     }
 }
+
+//Destination
 
 export function selectDestination(id, name){
     return{

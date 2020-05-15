@@ -60,14 +60,15 @@
   position: absolute;
   color: white;
   left: 50%;
-  top: 35%;
+  top: 39%;
   width: 100%;
   text-align: center;
   font-size: 40px;
   transform: translate(-50%, -50%);
+  font-family: Candara;
 }
 
-.title-header{
+.title-header, .greeting{
   position: absolute;
   color: white;
   left: 50%;
@@ -76,6 +77,11 @@
   text-align: center;
   font-size: 50px;
   transform: translate(-50%, -50%);
+  font-family: Candara;
+}
+
+.greeting{
+  font-size: 46px;
 }
 
 .no-dest-msg{
@@ -87,6 +93,7 @@
   text-align: center;
   font-size: 20px;
   transform: translate(-50%, -50%);
+  font-family: Candara;
 }
 
 .title-msg{
@@ -98,6 +105,7 @@
   text-align: center;
   font-size: 20px;
   transform: translate(-50%, -50%);
+  font-family: Candara;
 }
 
 .display-header-container{
@@ -151,12 +159,13 @@
     transform: translateX(-50%);
     white-space: nowrap;
     text-align: left;
-
+    font-family: Candara;
 }
 
 
 
 .note-header{
+    font-family: Candara;
     position: relative;
     font-size: 22px;
     color: white;
@@ -280,6 +289,7 @@
   }
 
   .arrival{
+    font-family: Candara;
     cursor: default;
     position: absolute;
     top: 60px;
@@ -290,6 +300,7 @@
   }
 
   .departure{
+    font-family: Candara;
     cursor: default;
     position: absolute;
     top: 85px;

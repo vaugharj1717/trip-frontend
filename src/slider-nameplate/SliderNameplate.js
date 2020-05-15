@@ -12,8 +12,6 @@ function SliderNameplate(props){
     const [name, setName] = useState(tripName);
     const isEditing = useSelector(state => state.isEditingTrip);
     
-
-
     function toggleEdit(){
         dispatch(toggleEditingTrips(!isEditing));
     }

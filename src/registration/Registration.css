@@ -47,7 +47,7 @@
 }
 
 .registration-submit{
-    top: 222px;
+    top: 210px;
     font-size: 20px;
     padding: 3px 20px 3px 20px;
     background-color: white;
@@ -64,6 +64,7 @@
     color: white;
     top: 2px;
     font-size: 25px;
+    font-family: Candara;
 }
 
 .registration-header:after{
@@ -75,4 +76,12 @@
     transform: translateX(-50%);
     height: 1px;
     background-color: rgba(150, 150, 150, .8);
+}
+
+.register-error{
+    color: #aaaaaa;
+    position: absolute;
+    left: 50%;
+    top: 250px;
+    transform: translateX(-50%);
 }

@@ -20,6 +20,8 @@ const initialState = {
 
     //User info
     user: {isLoggedIn: false},
+    loginError: false,
+    registerError: false,
 
     //Trip info
     trips: [{id: 1, name: "Big Trip"}, {id: 2, name: "Little Trip"}],
@@ -41,11 +43,32 @@ const initialState = {
 
 function reducer(state = initialState, action){
     switch (action.type) {
+
+        //Navigation
+
         case Action.GoToMainPage:
             return{
                 ...state,
                 atRegistration: false,
                 atLogin: false
+            }
+
+        case Action.GoToRegistration:
+            return{
+                ...state,
+                atRegistration: true,
+                atLogin: false,
+                loginError: false,
+                registerError: false,
+            }
+
+        case Action.GoToLogin:
+            return{
+                ...state,
+                atLogin: true,
+                atRegistration: false,
+                loginError: false,
+                registerError: false,
             }
 
         case Action.FinishLoggingIn:
@@ -70,20 +93,6 @@ function reducer(state = initialState, action){
                 currentDestination: null,
             }
 
-        case Action.GoToRegistration:
-            return{
-                ...state,
-                atRegistration: true,
-                atLogin: false,
-            }
-
-        case Action.GoToLogin:
-            return{
-                ...state,
-                atLogin: true,
-                atRegistration: false,
-            }
-        
         case Action.FinishRegistering:
             return{
                 ...state,
@@ -96,12 +105,26 @@ function reducer(state = initialState, action){
                 guesses: [],
                 currentDestination: null,
             }
+
+        case Action.DoDropdown:
+            return{
+                ...state,
+                isDropdown: true,
+            }
+
+        case Action.StopDropdown:
+            return{
+                ...state,
+                isDropdown: false,
+            }
         
 
+        //Trips
+    
         case Action.FinishCreatingTrip:
             return{
                 ...state,
-                currentTrip: {id: action.payload, name: "New Trip"},
+                currentTrip: {id: action.payload, name: "New Trip"},    
                 trips: [...state.trips, {id: action.payload, name: "New Trip"}],
                 destinations: [],
                 isEditingTrip: true,
@@ -110,14 +133,11 @@ function reducer(state = initialState, action){
                 currentDestination: null,
             }
         
-
-
-
         case Action.FinishEditingTrip:
             return{
                 ...state,
                 isEditingTrip: false,
-                trips: state.trips.map(trip => {
+                trips: state.trips.map(trip => {        //if trip is the edited trip, change it's name
                     if(trip.id === action.payload.id){
                         return ({id: trip.id, name: action.payload.newName })   
                     }
@@ -152,17 +172,8 @@ function reducer(state = initialState, action){
                 isEditingTrip: action.payload
             }
 
-        case Action.DoDropdown:
-            return{
-                ...state,
-                isDropdown: true,
-            }
-
-        case Action.StopDropdown:
-            return{
-                ...state,
-                isDropdown: false,
-            }
+        
+        //Google API Mgmt
         case Action.SetGoogleToken:
             return{
                 ...state,
@@ -184,6 +195,9 @@ function reducer(state = initialState, action){
                 ...state,
                 guesses: [],
             }
+
+        //Destinations
+
         case Action.SelectDestination:
             return{
                 ...state,
@@ -195,45 +209,11 @@ function reducer(state = initialState, action){
                 selectedDestination: null,
             };
 
-        case Action.LoginLoading:
-            return{
-                ...state,
-                loginLoading: action.payload,
-            }
+            case Action.FinishCreatingDestination:
 
-        case Action.RegisterLoading:
-            return{
-                ...state,
-                registerLoading: action.payload,
-            }
-
-        case Action.DestinationLoading:
-            return{
-                ...state,
-                destinationLoading: action.payload,
-            }
-
-        case Action.TripLoading:
-            return{
-                ...state,
-                tripLoading: action.payload,
-            }
-
-        case Action.NoteLoading:
-            return{
-                ...state,
-                noteLoading: action.payload,
-            }
-
-        case Action.DateLoading:
-            return{
-                ...state,
-                dateLoading: action.payload,
-            }
-
-        case Action.FinishCreatingDestination:
+            //create new destination object
             const newDestination = {id: action.payload.id, url: action.payload.url, fetchphotourl: action.payload.fetchphotourl, dindex: action.payload.dindex, tripid: action.payload.tripid, placeid: action.payload.placeid, name: action.payload.name, dur: action.payload.durdist2.dur, dist: action.payload.durdist2.dist, utcoffset: action.payload.utcoffset, arrival: action.payload.arrival, departure: action.payload.departure};
-            console.log("new index: " + action.payload.dindex);
+
             return{
                 ...state,
                 destinations: [...state.destinations.map(d => {
@@ -257,11 +237,14 @@ function reducer(state = initialState, action){
             };
 
         case Action.FinishDeletingDestination:
+
+            //delete destination
             const filteredDestinations = state.destinations.filter(d => d.id !== action.payload.id);
+            //edit duration and distance of dependent destinations
             const newDestinations = filteredDestinations.map(d => {
                 if(d.dindex > action.payload.dindex) return {...d, dindex: d.dindex - 1}
                 else if(d.dindex == action.payload.dindex - 1) return {...d, dur: action.payload.durdist.dur, dist: action.payload.durdist.dist}
-            })
+            });
             return{
                 ...state,
                 destinations: newDestinations,
@@ -310,10 +293,59 @@ function reducer(state = initialState, action){
                 })
             }
 
-        
-        
 
+        //Loading Mgmt
 
+        case Action.LoginLoading:
+            return{
+                ...state,
+                loginLoading: action.payload,
+            }
+
+        case Action.RegisterLoading:
+            return{
+                ...state,
+                registerLoading: action.payload,
+            }
+
+        case Action.DestinationLoading:
+            return{
+                ...state,
+                destinationLoading: action.payload,
+            }
+
+        case Action.TripLoading:
+            return{
+                ...state,
+                tripLoading: action.payload,
+            }
+
+        case Action.NoteLoading:
+            return{
+                ...state,
+                noteLoading: action.payload,
+            }
+
+        case Action.DateLoading:
+            return{
+                ...state,
+                dateLoading: action.payload,
+            }
+
+        
+        //Error management
+        case Action.LoginError:
+            return{
+                ...state,
+                loginError: true,
+            }
+        
+        case Action.RegisterError:
+            return{
+                ...state,
+                registerError: true,
+            }
+        
         default:
             return state;
     }

@@ -26,8 +26,7 @@ function App() {
     dispatch(stopDropdown())
   }
 
-
-
+  //Registration Page
   if(atRegistration){
     return(
       <div className="App" onClick={handleClick}>
@@ -44,6 +43,7 @@ function App() {
     )
   } 
   
+  //Login Page
   else if(atLogin){
     return(
       <div>
@@ -62,6 +62,8 @@ function App() {
     )
   }
 
+
+  //Main Page
   else{
     return (
       <div className="App" onClick={handleClick}>

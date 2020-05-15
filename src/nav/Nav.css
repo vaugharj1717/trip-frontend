@@ -16,14 +16,17 @@
 }
 
 .nav-left{
+    font-family: Candara;
     display: flex;
     justify-content: flex-start;
     align-items: center;
     width: 35%;
+    min-width: 300px;
     background-color: black;
 }
 
 .nav-right{
+    font-family: Candara;
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -33,7 +36,8 @@
 
 .nav-logo{
     margin-left: 110px;
-    font-size: 24px;
+    font-size: 30px;
+    font-family: Candara;
 }
 
 .nav-button{
@@ -98,9 +102,5 @@
     height: 82%;
     border: 1px solid white;
     border-radius: 15px;
-
-}
-
-.new-trip-pointer{
 
 }

@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react'
-import {useSelector, useDispatch} from 'react-redux';
+import React from 'react'
+import {useSelector} from 'react-redux';
 import './ContentPane.css';
 import Slider from '../slider/Slider.js';
 import Display from '../display/Display.js';
-import {actions} from '../actions.js';
 
-function ContentPane(props){
+function ContentPane(){
     const currentTrip = useSelector(state => state.currentTrip);
     const destinations = useSelector(state => state.destinations);
     const currentDestination = useSelector(state => state.currentDestination);

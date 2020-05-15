@@ -11,50 +11,56 @@ let handleSearch;
 function SelectDestinationBox(props){
     const isFirst = props.isFirst;
     const index = props.index;
+
+    //global state info
     const currentTrip = useSelector(state => state.currentTrip);
     const selectedDestination = useSelector(state => state.selectedDestination);
-    const googleToken = useSelector(state => state.googleToken);
+    const googleToken = useSelector(state => state.googleToken);            //unique session token retrieved from server
+    const gettingToken = useSelector(state => state.gettingGoogleToken);    //flag whether or not token is being retrieved
+    const guesses = useSelector(state => state.guesses);                    //guesses returned from autocomplete google service
     const user = useSelector(state => state.user);
-    const gettingToken = useSelector(state => state.gettingGoogleToken);
-    const guesses = useSelector(state => state.guesses);
+
     const [text, setText] = useState("");
     const [isSelection, setIsSelection] = useState(false);
     const dispatch = useDispatch();
 
+    //Handle when user selects a destination from dropdown of autocomplete guesses
     function handleSelect(id, name){
         setIsSelection(true);
         dispatch(selectDestination(id, name));
-        setText(name);
+        setText(name);      //set input field to text of selected destination
     }
 
+    //
     useEffect(() => {
+        //debounced method to get autocomplete contents
         const doAutocomplete = debounce((text, googleToken) => {
-            dispatch(unselectDestination);
-            if(text.length >= 3 && googleToken !== null){
+            dispatch(unselectDestination);                    //User has typed again, so any user autocomplete selection is no longer valid
+            if(text.length >= 3 && googleToken !== null){     //If we have session token and enough characters in input, get autocomplete guesses
                 dispatch(startAutoCompleting(text, googleToken));
             }
             else{
-                dispatch(clearGuesses());
+                dispatch(clearGuesses());                     //If no token or not enough characters in input, clear dropdown contents
             }
-        }, 1000, false);
+        }, 600, false);
 
+        //handle user input into text field
         handleSearch = function handleSearch(text, googleToken){
             setText(text);
-            setIsSelection(false);
-            if(googleToken === null && gettingToken === false){
+            setIsSelection(false);      //user has typed, any selection made is now invalid
+            if(googleToken === null && gettingToken === false){     //if no google token has been acquired, get one
                 dispatch(startAutoCompleteSession(user.id));
             }
-            doAutocomplete(text, googleToken);
+            doAutocomplete(text, googleToken);                      //call autocomplete method
         }
-    }, []);
+    }, [dispatch, gettingToken, user]);
 
+    //handle creation
     function handleCreate(index, token, tripid, placeid, name){
         dispatch(createDestination(index, token, tripid, placeid, name));
     }
     
-
-
-
+    //If origin destination is being chosen
     if (!isFirst) return(
         <div className="select-destination-box" onClick={(e)=>e.stopPropagation()}>
             <div className="stem">
@@ -76,6 +82,8 @@ function SelectDestinationBox(props){
             </div>
         </div>    
     )
+
+    //if non-origin destination is being selected
     else return(
         <div className="select-destination-box-first" onClick={(e)=>e.stopPropagation()}>
             <div className="stem-first">
