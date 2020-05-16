@@ -33,7 +33,7 @@ function App() {
         <div className="page"></div>
         <Nav user={user} />
         <Registration />
-        {registerLoading &
+        {registerLoading &&
         <div className = "loading-container">
             <Spinner />
         </div>

@@ -173,19 +173,19 @@ function Display(props){
 
         //check if date input is sanitized
         function isSanitized(month, day, year, hour, min, half){
-            if(!month || month === null || month.length !== 2 || isNaN(month) || month <= 0 || month > 12 || month.indexOf('-') !== -1 || month.indexOf('.') !== -1 || month.indexOf(' ') !== -1){
+            if(!month || month === null || month.length === 0 || isNaN(month) || month <= 0 || month > 12 || month.indexOf('-') !== -1 || month.indexOf('.') !== -1 || month.indexOf(' ') !== -1){
                 return false;
             }
             if(!year || year === null || year.length !== 4 || isNaN(year) || year < 1000 || year.indexOf('-') !== -1 || year.indexOf('.') !== -1 || year.indexOf(' ') !== -1) {
                 return false;
             } 
-            if(!hour || hour === '' || hour.length !== 2 || isNaN(hour) || hour <= 0 || hour > 12 || hour.indexOf('-') !== -1 || hour.indexOf('.') !== -1 || hour.indexOf(' ') !== -1) {
+            if(!hour || hour === '' || hour.length === 0 || isNaN(hour) || hour <= 0 || hour > 12 || hour.indexOf('-') !== -1 || hour.indexOf('.') !== -1 || hour.indexOf(' ') !== -1) {
                 return false;
             }
-            if(!min || min.length !== 2 || isNaN(min) || min < 0 || min >= 60 || min.indexOf('-') !== -1 || min.indexOf('.') !== -1 || min.indexOf(' ') !== -1) {
+            if(!min || min.length === 0 || isNaN(min) || min < 0 || min >= 60 || min.indexOf('-') !== -1 || min.indexOf('.') !== -1 || min.indexOf(' ') !== -1) {
                 return false;
             }
-            if(!day || day.length !== 2 || isNaN(day) || day <= 0 || day > 31 || day.indexOf('-') !== -1 || day.indexOf('.') !== -1 || day.indexOf(' ') !== -1) {
+            if(!day || day.length === 0 || isNaN(day) || day <= 0 || day > 31 || day.indexOf('-') !== -1 || day.indexOf('.') !== -1 || day.indexOf(' ') !== -1) {
                 return false;
             }
             if(!half || (half !== "PM" && half !== "AM")){
@@ -357,7 +357,7 @@ function Display(props){
     )
     
     //Display when destination isn't selected
-    else if(trip && !destination) return(
+    else if(trip && !destination && !destinationLoading) return(
         <div id="display" style={{left: `${left}px`}} className="display-z">
                 <div className="no-dest-header">No Destination Selected</div>
                 <div className="no-dest-msg">Create or select a destination to see more.</div>
