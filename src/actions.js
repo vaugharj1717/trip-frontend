@@ -15,6 +15,7 @@ export const Action = Object.freeze({
     DestinationLoading: "DestinationLoading",
     ShowDestinationSelect: "ShowDestinationSelect",
     HideDestinationSelect: "HideDestinationSelect",
+    AutocompleteLoading: "AutocompleteLoading",
 
     //User
     FinishLoggingIn: "FinishLoggingIn",
@@ -50,7 +51,7 @@ export const Action = Object.freeze({
     RegisterError: "RegisterError",
 });
 
-const host = "http://localhost:3444";
+const host = "https://tripservice.duckdns.org:8442";
 
 function checkForErrors(response){
     if(!response.ok){
@@ -169,10 +170,10 @@ export function startRegistering(username, password, email){
                 dispatch(finishRegistering(username, data.id));
             }
             else{
-                dispatch(Action.RegisterError);
+                dispatch({type: Action.RegisterError});
             }
         })
-        .finally(()=> {
+        .finally(() => {
             dispatch({type: Action.RegisterLoading, payload: false});
         })
     }
@@ -369,11 +370,14 @@ export function startAutoCompleting(text, token){
         .then(response => response.json())
         .then(data => {
             if(data.ok){
-                dispatch(finishAutoCompleting(data.guesses))
+                dispatch(finishAutoCompleting(data.guesses));
             }
             else{
                 console.error("Could not autocomplete.")
             }
+        })
+        .finally(() => {
+            dispatch({type: Action.AutocompleteLoading, payload: false});
         })
     }
 }

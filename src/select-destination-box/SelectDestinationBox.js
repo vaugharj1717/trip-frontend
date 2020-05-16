@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import './SelectDestinationBox.css';
+import Spinner from '../spinner/Spinner.js';
 import {useSelector, useDispatch} from 'react-redux';
-import {startAutoCompleteSession, startAutoCompleting, clearGuesses, selectDestination, unselectDestination, createDestination} from '../actions.js'
+import {Action, startAutoCompleteSession, startAutoCompleting, clearGuesses, selectDestination, unselectDestination, createDestination} from '../actions.js'
 import {debounce} from '../helpers.js';
 
 
@@ -19,6 +20,7 @@ function SelectDestinationBox(props){
     const gettingToken = useSelector(state => state.gettingGoogleToken);    //flag whether or not token is being retrieved
     const guesses = useSelector(state => state.guesses);                    //guesses returned from autocomplete google service
     const user = useSelector(state => state.user);
+    const autocompleteLoading = useSelector(state => state.autocompleteLoading);
 
     const [text, setText] = useState("");
     const [isSelection, setIsSelection] = useState(false);
@@ -40,6 +42,7 @@ function SelectDestinationBox(props){
                 dispatch(startAutoCompleting(text, googleToken));
             }
             else{
+                dispatch({type: Action.AutocompleteLoading, payload: false});   //no longer retrieving results
                 dispatch(clearGuesses());                     //If no token or not enough characters in input, clear dropdown contents
             }
         }, 600, false);
@@ -47,6 +50,9 @@ function SelectDestinationBox(props){
         //handle user input into text field
         handleSearch = function handleSearch(text, googleToken){
             setText(text);
+            if(text.length >= 3){
+                dispatch({type: Action.AutocompleteLoading, payload: true});   //show user that results will start being retrieved
+            } 
             setIsSelection(false);      //user has typed, any selection made is now invalid
             if(googleToken === null && gettingToken === false){     //if no google token has been acquired, get one
                 dispatch(startAutoCompleteSession(user.id));
@@ -72,11 +78,16 @@ function SelectDestinationBox(props){
                             <div key={guess.id} className="autocomplete-guess" onClick={()=>handleSelect(guess.id, guess.name)}>{guess.name}</div>
                         )}
                         </div>
+                    {autocompleteLoading &&
+                    <div className="select-dest-spinner-container">
+                        <Spinner small={true}/>
+                    </div>
+                    }
                     {isSelection &&
                     <button className="create-button" onClick={() => handleCreate(index, googleToken, currentTrip.id, selectedDestination.id, selectedDestination.name)}>Select</button>
                     }
                     {!isSelection &&
-                    <button className="create-button" disabled>Select</button>
+                    <button className="create-button-disabled" disabled>Select</button>
                     }
                 </div>
             </div>
@@ -95,11 +106,17 @@ function SelectDestinationBox(props){
                             <div key={guess.id} className="autocomplete-guess" onClick={()=>handleSelect(guess.id, guess.name)}>{guess.name}</div>
                         )}
                         </div>
+                        
+                    {autocompleteLoading &&
+                    <div className="select-dest-spinner-container">
+                        <Spinner small={true}/>
+                    </div>
+                    }
                     {isSelection &&
                     <button className="create-button" onClick={() => handleCreate(index, googleToken, currentTrip.id, selectedDestination.id, selectedDestination.name)}>Select</button>
                     }
                     {!isSelection &&
-                    <button className="create-button" disabled>Select</button>
+                    <button className="create-button-disabled" disabled>Select</button>
                     }
                 </div>
             </div>

@@ -16,6 +16,7 @@ const initialState = {
     noteLoading: false,
     tripLoading: false,
     destinationLoading: false,
+    autocompleteLoading: false,
 
 
     //User info
@@ -332,6 +333,12 @@ function reducer(state = initialState, action){
             return{
                 ...state,
                 dateLoading: action.payload,
+            }
+
+        case Action.AutocompleteLoading:
+            return{
+                ...state,
+                autocompleteLoading: action.payload
             }
 
         

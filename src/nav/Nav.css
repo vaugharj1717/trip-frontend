@@ -12,7 +12,12 @@
     border-bottom: 1px solid white;
     color: white;
     box-shadow: -1px 2px 15px 5px #000000;
+}
+
+.nav-wrap{
     min-width: 700px;
+    height: 1px;
+
 }
 
 .nav-left{
@@ -104,5 +109,14 @@
     height: 82%;
     border: 1px solid white;
     border-radius: 15px;
+}
 
+@media only screen and (max-width: 700px){
+    .nav-button{
+        width: 100px;
+    }
+
+    .nav-right{
+        width: 300px;
+    }
 }

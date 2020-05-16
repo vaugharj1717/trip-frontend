@@ -4,8 +4,7 @@ import {Action, startSavingNote, startChangingDate, startChangingDepDate} from '
 import {debounce} from '../helpers.js';
 import './Display.css';
 import Spinner from '../spinner/Spinner.js';
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 
 //handler methods
 let handleNoteChange;
@@ -320,9 +319,6 @@ function Display(props){
                                     {dateLoading &&
                                         <Spinner small={true}/>
                                     }
-                                    {!dateLoading && validDate &&
-                                        <FontAwesomeIcon className = "icon" color="white" icon={faCheck}/>
-                                    }
                                     {!dateLoading && !validDate &&
                                         <p>Invalid Date</p>
                                     }
@@ -336,9 +332,6 @@ function Display(props){
                         <div className="note-loading-container">
                             {noteLoading &&
                             <Spinner small={true}/>
-                            }
-                            {!noteLoading &&
-                                <FontAwesomeIcon className = "icon" color="white" icon={faCheck}/>
                             }
                         </div>
             </div>
@@ -374,7 +367,7 @@ function Display(props){
 
     //Display when destination is loading
     else if(destinationLoading) return(
-        <div className="display" style={{left: `${left}px`}} onClick={handleClick}>
+        <div className="display-z" style={{left: `${left}px`}} onClick={handleClick}>
              <div className = "display-loading-container">
                 <Spinner />
             </div>

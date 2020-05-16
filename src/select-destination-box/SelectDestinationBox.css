@@ -1,6 +1,7 @@
 .select-destination-box{
     position: relative;
     height: 100%;
+    cursor: default;
 }
 
 .stem{
@@ -54,11 +55,11 @@
 
 .autocomplete-textbox{
     position: relative;
-    top: 2px;
+    top: 3px;
     left: 50%;
     transform: translateX(-50%);
     width: 180px;
-    border-radius: 2px;
+    border-radius: 15px;
     text-align: center;
 }
 
@@ -101,8 +102,27 @@
     z-index: -1;
 }
 
+.create-button-disabled{
+    position: absolute;
+    bottom: 9px;
+    padding: 5px;
+    width: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #aaaaaa;
+    border-radius: 15px;
+    color: #dddddd;
+    border: 1px solid rgba(150, 150, 150, .5);
+    z-index: -1;
+}
+
 .create-button:hover{
     background-color: rgba(220, 220, 220);
+}
+
+.create-button-disabled:hover{
+    cursor: default;
+    color: #dddddd
 }
 
 .select-destination-box-first{
@@ -147,4 +167,12 @@
     height: 95%;
     border: 2px solid white;
     border-radius: 5px;
+}
+
+.select-dest-spinner-container{
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 35px;
+    width: 20px;
 }
