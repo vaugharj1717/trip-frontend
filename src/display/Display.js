@@ -224,7 +224,7 @@ function Display(props){
         if(isNaN(depHour) || depHour <= 0 || depHour > 12 || depHour.indexOf(' ') !== -1 || depHour.indexOf('-') !== -1 || depHour.indexOf('+') !== -1 || depHour.indexOf('.') !== -1 || depHour.indexOf(' ') !== -1) {
             setDepHour("01");
         } //else{setDepHour(depHour => depHour.padStart(2, '0'))}
-        if(isNaN(depMin) || depMin.length === 0 || depMin < 0 || depMin >= 60 || depMin.indexOf(' ') !== -1 || depMin.indexOf('-') !== -1 || depMin.indexOf('+') !== -1 || depMin.indexOf('.') !== -1 || depMin.indexOf(' ') !== -1) {
+        if(isNaN(depMin) || depMin.length !== 2 || depMin < 0 || depMin >= 60 || depMin.indexOf(' ') !== -1 || depMin.indexOf('-') !== -1 || depMin.indexOf('+') !== -1 || depMin.indexOf('.') !== -1 || depMin.indexOf(' ') !== -1) {
             setDepMin("00");
         } //else{setDepMin(depMin => depMin.padStart(2, '0'))}
         if(isNaN(depDay) || depDay <= 0 || depDay > 31 || depDay.indexOf(' ') !== -1 || depDay.indexOf('-') !== -1 || depDay.indexOf('+') !== -1 || depDay.indexOf('.') !== -1 || depDay.indexOf(' ') !== -1) {
@@ -246,7 +246,7 @@ function Display(props){
         if(isNaN(hour) || hour <= 0 || hour > 12 || hour.indexOf(' ') !== -1 || hour.indexOf('-') !== -1 || hour.indexOf('+') !== -1 || hour.indexOf('.') !== -1 || hour.indexOf(' ') !== -1) {
             setHour("01");
         } //else{setHour(hour => hour.padStart(2, '0'))}
-        if(isNaN(min) || min.length === 0 || min < 0 || min >= 60 || min.indexOf(' ') !== -1 || min.indexOf('-') !== -1 || min.indexOf('+') !== -1 || min.indexOf('.') !== -1 || min.indexOf(' ') !== -1) {
+        if(isNaN(min) || min.length !== 2 || min < 0 || min >= 60 || min.indexOf(' ') !== -1 || min.indexOf('-') !== -1 || min.indexOf('+') !== -1 || min.indexOf('.') !== -1 || min.indexOf(' ') !== -1) {
             setMin("00");
         } //else{setMin(min => min.padStart(2, '0'))}
         if(isNaN(day) || day <= 0 || day > 31 || day.indexOf(' ') !== -1 || day.indexOf('-') !== -1 || day.indexOf('+') !== -1 || day.indexOf('.') !== -1 || day.indexOf(' ') !== -1) {

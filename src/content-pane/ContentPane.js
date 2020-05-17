@@ -12,7 +12,6 @@ function ContentPane(){
     const currentDestination = useSelector(state => state.currentDestination);
 
     function handleClick(){
-        console.log("Content pane clicked");
         dispatch(setShowDestinationSelector(false));
     }
 

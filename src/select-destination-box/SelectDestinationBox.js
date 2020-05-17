@@ -14,6 +14,7 @@ function SelectDestinationBox(props){
     const index = props.index;
 
     //global state info
+    const destinationLoading = useSelector(state => state.destinationLoading);
     const currentTrip = useSelector(state => state.currentTrip);
     const selectedDestination = useSelector(state => state.selectedDestination);
     const googleToken = useSelector(state => state.googleToken);            //unique session token retrieved from server
@@ -83,10 +84,10 @@ function SelectDestinationBox(props){
                         <Spinner small={true}/>
                     </div>
                     }
-                    {isSelection &&
+                    {isSelection && !destinationLoading && 
                     <button className="create-button" onClick={() => handleCreate(index, googleToken, currentTrip.id, selectedDestination.id, selectedDestination.name)}>Select</button>
                     }
-                    {!isSelection &&
+                    {(!isSelection || destinationLoading) &&
                     <button className="create-button-disabled" disabled>Select</button>
                     }
                 </div>
@@ -112,10 +113,10 @@ function SelectDestinationBox(props){
                         <Spinner small={true}/>
                     </div>
                     }
-                    {isSelection &&
+                    {isSelection && !destinationLoading &&
                     <button className="create-button" onClick={() => handleCreate(index, googleToken, currentTrip.id, selectedDestination.id, selectedDestination.name)}>Select</button>
                     }
-                    {!isSelection &&
+                    {(!isSelection || destinationLoading) &&
                     <button className="create-button-disabled" disabled>Select</button>
                     }
                 </div>
