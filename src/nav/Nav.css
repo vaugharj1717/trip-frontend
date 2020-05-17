@@ -119,4 +119,12 @@
     .nav-right{
         width: 300px;
     }
+
+    .nav-left{
+        min-width: 150px;
+    }
+    .nav-logo{
+        font-size: 22px;
+        margin-left: 60px;
+    }
 }

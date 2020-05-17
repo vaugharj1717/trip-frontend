@@ -172,19 +172,19 @@ function Display(props){
 
         //check if date input is sanitized
         function isSanitized(month, day, year, hour, min, half){
-            if(!month || month === null || month.length === 0 || isNaN(month) || month <= 0 || month > 12 || month.indexOf('-') !== -1 || month.indexOf('.') !== -1 || month.indexOf(' ') !== -1){
+            if(!month || month === null || month.length === 0 || isNaN(month) || month <= 0 || month > 12 || month.indexOf('+') !== -1 || month.indexOf('-') !== -1 || month.indexOf('.') !== -1 || month.indexOf(' ') !== -1){
                 return false;
             }
-            if(!year || year === null || year.length !== 4 || isNaN(year) || year < 1000 || year.indexOf('-') !== -1 || year.indexOf('.') !== -1 || year.indexOf(' ') !== -1) {
+            if(!year || year === null || year.length !== 4 || isNaN(year) || year < 1000 || year.indexOf('-') !== -1 || year.indexOf('+') !== -1 || year.indexOf('.') !== -1 || year.indexOf(' ') !== -1) {
                 return false;
             } 
-            if(!hour || hour === '' || hour.length === 0 || isNaN(hour) || hour <= 0 || hour > 12 || hour.indexOf('-') !== -1 || hour.indexOf('.') !== -1 || hour.indexOf(' ') !== -1) {
+            if(!hour || hour === '' || hour.length === 0 || isNaN(hour) || hour <= 0 || hour > 12 || hour.indexOf('-') !== -1 || hour.indexOf('+') !== -1 || hour.indexOf('.') !== -1 || hour.indexOf(' ') !== -1) {
                 return false;
             }
-            if(!min || min.length === 0 || isNaN(min) || min < 0 || min >= 60 || min.indexOf('-') !== -1 || min.indexOf('.') !== -1 || min.indexOf(' ') !== -1) {
+            if(!min || min.length !== 2 || isNaN(min) || min < 0 || min >= 60 || min.indexOf('-') !== -1 || min.indexOf('+') !== -1 || min.indexOf('.') !== -1 || min.indexOf(' ') !== -1) {
                 return false;
             }
-            if(!day || day.length === 0 || isNaN(day) || day <= 0 || day > 31 || day.indexOf('-') !== -1 || day.indexOf('.') !== -1 || day.indexOf(' ') !== -1) {
+            if(!day || day.length === 0 || isNaN(day) || day <= 0 || day > 31 || day.indexOf('-') !== -1 || day.indexOf('+') !== -1 || day.indexOf('.') !== -1 || day.indexOf(' ') !== -1) {
                 return false;
             }
             if(!half || (half !== "PM" && half !== "AM")){
@@ -215,21 +215,21 @@ function Display(props){
 
     //sanitize date input
     function sanitizeDepDateInput(){
-        if(isNaN(depMonth) || depMonth <= 0 || depMonth > 12 || depMonth.indexOf(' ') !== -1 || depMonth.indexOf('-') !== -1 || depMonth.indexOf('.') !== -1 || depMonth.indexOf(' ') !== -1) {
+        if(isNaN(depMonth) || depMonth <= 0 || depMonth > 12 || depMonth.indexOf(' ') !== -1 || depMonth.indexOf('-') !== -1 || depMonth.indexOf('+') !== -1 || depMonth.indexOf('.') !== -1 || depMonth.indexOf(' ') !== -1) {
             setDepMonth("01");
-        } else{setDepMonth(depMonth => depMonth.padStart(2, '0'))}
-        if(isNaN(depYear) || depYear < 1000 || depYear.indexOf(' ') !== -1 || depYear.indexOf('-') !== -1 || depYear.indexOf('.') !== -1 || depYear.indexOf(' ') !== -1) {
+        } //else{setDepMonth(depMonth => depMonth.padStart(2, '0'))}
+        if(isNaN(depYear) || depYear < 1000 || depYear.indexOf(' ') !== -1 || depYear.indexOf('-') !== -1 || depYear.indexOf('+') !== -1 || depYear.indexOf('.') !== -1 || depYear.indexOf(' ') !== -1) {
             setDepYear("2020");
         } 
-        if(isNaN(depHour) || depHour <= 0 || depHour > 12 || depHour.indexOf(' ') !== -1 || depHour.indexOf('-') !== -1 || depHour.indexOf('.') !== -1 || depHour.indexOf(' ') !== -1) {
+        if(isNaN(depHour) || depHour <= 0 || depHour > 12 || depHour.indexOf(' ') !== -1 || depHour.indexOf('-') !== -1 || depHour.indexOf('+') !== -1 || depHour.indexOf('.') !== -1 || depHour.indexOf(' ') !== -1) {
             setDepHour("01");
-        } else{setDepHour(depHour => depHour.padStart(2, '0'))}
-        if(isNaN(depMin) || depMin < 0 || depMin >= 60 || depMin.indexOf(' ') !== -1 || depMin.indexOf('-') !== -1 || depMin.indexOf('.') !== -1 || depMin.indexOf(' ') !== -1) {
+        } //else{setDepHour(depHour => depHour.padStart(2, '0'))}
+        if(isNaN(depMin) || depMin.length === 0 || depMin < 0 || depMin >= 60 || depMin.indexOf(' ') !== -1 || depMin.indexOf('-') !== -1 || depMin.indexOf('+') !== -1 || depMin.indexOf('.') !== -1 || depMin.indexOf(' ') !== -1) {
             setDepMin("00");
-        } else{setDepMin(depMin => depMin.padStart(2, '0'))}
-        if(isNaN(depDay) || depDay <= 0 || depDay > 31 || depDay.indexOf(' ') !== -1 || depDay.indexOf('-') !== -1 || depDay.indexOf('.') !== -1 || depDay.indexOf(' ') !== -1) {
+        } //else{setDepMin(depMin => depMin.padStart(2, '0'))}
+        if(isNaN(depDay) || depDay <= 0 || depDay > 31 || depDay.indexOf(' ') !== -1 || depDay.indexOf('-') !== -1 || depDay.indexOf('+') !== -1 || depDay.indexOf('.') !== -1 || depDay.indexOf(' ') !== -1) {
             setDepDay("01");
-        } else{setDepDay(depDay => depDay.padStart(2, '0'))}
+        } //else{setDepDay(depDay => depDay.padStart(2, '0'))}
         if(depHalf.toUpperCase() !== "PM" && depHalf.toUpperCase() !== "AM"){
             setHalf("AM");
         } else{setDepHalf(depHalf => depHalf.toUpperCase())}
@@ -237,21 +237,21 @@ function Display(props){
 
     //sanitize date input
     function sanitizeDateInput(){
-        if(isNaN(month) || month <= 0 || month > 12 || month.indexOf(' ') !== -1 || month.indexOf('-') !== -1 || month.indexOf('.') !== -1 || month.indexOf(' ') !== -1) {
+        if(isNaN(month) || month <= 0 || month > 12 || month.indexOf(' ') !== -1 || month.indexOf('-') !== -1 || month.indexOf('+') !== -1 || month.indexOf('.') !== -1 || month.indexOf(' ') !== -1) {
             setMonth("01");
-        } else{setMonth(month => month.padStart(2, '0'))}
-        if(isNaN(year) || year < 1000 || year.indexOf(' ') !== -1 || year.indexOf('-') !== -1 || year.indexOf('.') !== -1 || year.indexOf(' ') !== -1) {
+        } //else{setMonth(month => month.padStart(2, '0'))}
+        if(isNaN(year) || year < 1000 || year.indexOf(' ') !== -1 || year.indexOf('-') !== -1 || year.indexOf('+') !== -1 || year.indexOf('.') !== -1 || year.indexOf(' ') !== -1) {
             setYear("2020");
         } 
-        if(isNaN(hour) || hour <= 0 || hour > 12 || hour.indexOf(' ') !== -1 || hour.indexOf('-') !== -1 || hour.indexOf('.') !== -1 || hour.indexOf(' ') !== -1) {
+        if(isNaN(hour) || hour <= 0 || hour > 12 || hour.indexOf(' ') !== -1 || hour.indexOf('-') !== -1 || hour.indexOf('+') !== -1 || hour.indexOf('.') !== -1 || hour.indexOf(' ') !== -1) {
             setHour("01");
-        } else{setHour(hour => hour.padStart(2, '0'))}
-        if(isNaN(min) || min < 0 || min >= 60 || min.indexOf(' ') !== -1 || min.indexOf('-') !== -1 || min.indexOf('.') !== -1 || min.indexOf(' ') !== -1) {
+        } //else{setHour(hour => hour.padStart(2, '0'))}
+        if(isNaN(min) || min.length === 0 || min < 0 || min >= 60 || min.indexOf(' ') !== -1 || min.indexOf('-') !== -1 || min.indexOf('+') !== -1 || min.indexOf('.') !== -1 || min.indexOf(' ') !== -1) {
             setMin("00");
-        } else{setMin(min => min.padStart(2, '0'))}
-        if(isNaN(day) || day <= 0 || day > 31 || day.indexOf(' ') !== -1 || day.indexOf('-') !== -1 || day.indexOf('.') !== -1 || day.indexOf(' ') !== -1) {
+        } //else{setMin(min => min.padStart(2, '0'))}
+        if(isNaN(day) || day <= 0 || day > 31 || day.indexOf(' ') !== -1 || day.indexOf('-') !== -1 || day.indexOf('+') !== -1 || day.indexOf('.') !== -1 || day.indexOf(' ') !== -1) {
             setDay("01");
-        } else{setDay(day => day.padStart(2, '0'))}
+        } //else{setDay(day => day.padStart(2, '0'))}
         if(half.toUpperCase() !== "PM" && half.toUpperCase() !== "AM"){
             setHalf("AM");
         } else{setHalf(half => half.toUpperCase())}
