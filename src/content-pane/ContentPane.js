@@ -3,17 +3,22 @@ import {useSelector, useDispatch} from 'react-redux';
 import './ContentPane.css';
 import Slider from '../slider/Slider.js';
 import Display from '../display/Display.js';
-import {actions} from '../actions.js';
+import { setShowDestinationSelector } from '../actions';
 
-function ContentPane(props){
+function ContentPane(){
+    const dispatch = useDispatch();
+    const currentTrip = useSelector(state => state.currentTrip);
     const destinations = useSelector(state => state.destinations);
-    console.log(JSON.stringify(destinations));
     const currentDestination = useSelector(state => state.currentDestination);
 
+    function handleClick(){
+        dispatch(setShowDestinationSelector(false));
+    }
+
     return(
-        <div className="content-pane">
+        <div className="content-pane" onClick={handleClick}>
             <Slider destinations={destinations}/>
-            <Display currentDestination={currentDestination}/>
+            <Display currentDestination={currentDestination} currentTrip={currentTrip}/>
         </div>
     )
 }

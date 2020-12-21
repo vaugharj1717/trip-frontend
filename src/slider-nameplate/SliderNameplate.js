@@ -1,7 +1,9 @@
 import React, {useState} from 'react';
 import './SliderNameplate.css';
 import {useSelector, useDispatch} from 'react-redux';
-import {toggleEditingTrips, startEditingTrip, startDeletingTrip} from '../actions.js'
+import {toggleEditingTrips, startEditingTrip, startDeletingTrip} from '../actions.js';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faSave, faTrash, faCaretLeft} from '@fortawesome/free-solid-svg-icons';
 
 function SliderNameplate(props){
     const dispatch = useDispatch();
@@ -10,8 +12,6 @@ function SliderNameplate(props){
     const [name, setName] = useState(tripName);
     const isEditing = useSelector(state => state.isEditingTrip);
     
-
-
     function toggleEdit(){
         dispatch(toggleEditingTrips(!isEditing));
     }
@@ -27,16 +27,16 @@ function SliderNameplate(props){
         <div className = "slider-nameplate">
         {isEditing && 
             <div className = "change-name-container">
-                <input type="text" placeholder={tripName} onChange={(e) => setName(e.target.value)}></input>
-                <button className="cancel-button" onClick={toggleEdit}>Cancel</button>
-                <button className="delete-button" onClick={onTripDelete}>Delete</button>
-                <button className="save-button" onClick={onTripEdit}>Save</button>
+                <input type="text" placeholder={tripName} maxLength={40} onChange={(e) => setName(e.target.value)}></input>
+                <button className="cancel-button" onClick={toggleEdit}><FontAwesomeIcon icon={faCaretLeft}/></button>
+                <button className="save-button" onClick={onTripEdit}><FontAwesomeIcon icon={faSave}/></button>
+                <button className="delete-button" onClick={onTripDelete}><FontAwesomeIcon icon={faTrash}/></button>
             </div>
         }
         {!isEditing &&
             <div className = "show-name-container">
                 <div className="trip-name">{tripName}</div>
-                <button className="edit-name-button" onClick={toggleEdit}>Edit</button>
+                <button className="edit-name-button" onClick={toggleEdit}><FontAwesomeIcon icon={faEdit}/></button>
                 
             </div>
         }

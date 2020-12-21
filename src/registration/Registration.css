@@ -1,0 +1,94 @@
+.registration{
+    left: 50.5%;
+    top: 39%;
+    transform: translate(-50%, -50%);
+    position: fixed;
+    background-color: rgba(25, 25, 25, .8);
+    width: 600px;
+    height: 295px;
+    margin-top: 70px;
+    margin-right: 8px;
+    border-radius: 100px;
+    border: 3px solid rgba(0, 0, 0, 1);
+    box-shadow: 0px 0px 5px 1px #000000;
+}
+
+.registration-label, .registration-field, .registration-submit, .registration-header{
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.username{
+    cursor: default;
+    top: 50px;
+    color: white;
+}
+
+.password{
+    cursor: default;
+    top: 100px;
+    color: white;
+}
+
+.email{
+    cursor: default;
+    top: 150px;
+    color: white;
+}
+
+.field-username{
+    top: 74px;
+}
+
+.field-password{
+    top: 124px;
+}
+
+.field-email{
+    top: 174px;
+}
+
+.registration-submit{
+    top: 210px;
+    font-size: 20px;
+    padding: 3px 20px 3px 20px;
+    background-color: white;
+    color: black;
+    border-radius: 5px;
+    border: 2px solid black;
+}
+
+.registration-submit:active{
+    background-color: gray;
+}
+
+.registration-header{
+    color: white;
+    top: 2px;
+    font-size: 25px;
+    font-family: Candara;
+    cursor: default;
+}
+
+.registration-header:after{
+    position: absolute;
+    content: "";
+    top: 105%;
+    left: 50%;
+    width: 250%;
+    transform: translateX(-50%);
+    height: 1px;
+    background-color: rgba(150, 150, 150, .8);
+}
+
+.register-error{
+    cursor: default;
+    color: #aaaaaa;
+    position: absolute;
+    left: 50%;
+    top: 250px;
+    width: 100%;
+    transform: translateX(-50%);
+    text-align: center;
+}

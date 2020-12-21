@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import './Nav.css';
 import {useSelector, useDispatch} from 'react-redux';
 import {goToRegistration, startLoggingOut, goToLogin, startSelectingTrip, startCreatingTrip, doDropdown, stopDropdown} from '../actions'
@@ -42,50 +42,54 @@ function Nav(props){
 
     if(user.isLoggedIn){
         return(
-            <div className = "nav">
-                <div className = "nav-left">
-                    <div className = "nav-logo">
-                        Trip Maker
-                    </div>
-                </div>
-                <div className = "nav-right">
-                    <div className = "nav-new-trip nav-button" onClick={onCreateTrip}>
-                        New Trip
-                    </div>
-                    <div className = "nav-select-trip nav-button" onClick={(e) =>{setDropped(!isDropped); e.stopPropagation()}}>
-                        Select Trip
-                        {isDropped &&
-                        <div className="nav-dropdown-pane">
-                            {trips.map(trip => {return(
-                                <div key= {trip.id} className="nav-dropdown-item" onClick={()=> onSelectTrip(trip)}>
-                                    {trip.name}
-                                </div>
-                            )})}  
+            
+                <div className = "nav">
+                    <div className = "nav-left">
+                        <div className = "nav-logo">
+                            Trip Maker
                         </div>
-                        }
-                        
                     </div>
-                    <div className = "nav-logout nav-button" onClick={onLogout}>
-                        Logout
+                    <div className = "nav-right">
+                        <div className = "nav-new-trip nav-button" onClick={onCreateTrip}>
+                            <p>New Trip</p>
+                        </div>
+                        <div className = "nav-select-trip nav-button" onClick={(e) =>{setDropped(!isDropped); e.stopPropagation()}}>
+                            <p>Select Trip</p>
+                            {isDropped &&
+                            <div className="nav-dropdown-pane">
+                                {trips.map(trip => {return(
+                                    <div key= {trip.id} className="nav-dropdown-item" onClick={()=> onSelectTrip(trip)}>
+                                        {trip.name}
+                                    </div>
+                                )})}  
+                            </div>
+                            }
+                            
+                        </div>
+                        <div className = "nav-logout nav-button" onClick={onLogout}>
+                            <p>Logout</p>
+                        </div>
                     </div>
-                </div>
-            </div>  
+                </div>  
+            
         )
     }
     else{
         return(
-            <div className = "nav">
-                <div className = "nav-left">
-                    <div className = "nav-logo">
-                        Trip Maker
+            <div className= "nav-wrap">
+                <div className = "nav">
+                    <div className = "nav-left">
+                        <div className = "nav-logo">
+                            Trip Maker
+                        </div>
                     </div>
-                </div>
-                <div className = "nav-right">
-                    <div className = "nav-login nav-button" onClick={onLogin}>
-                        Login
-                    </div>
-                    <div className = "nav-register nav-button" onClick={onRegister}>
-                        Register
+                    <div className = "nav-right">
+                        <div className = "nav-login nav-button" onClick={onLogin}>
+                            <p>Login</p>
+                        </div>
+                        <div className = "nav-register nav-button" onClick={onRegister}>
+                            <p>Register</p>
+                        </div>
                     </div>
                 </div>
             </div>
