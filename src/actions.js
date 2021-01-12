@@ -51,7 +51,8 @@ export const Action = Object.freeze({
     RegisterError: "RegisterError",
 });
 
-const host = "https://tripservice.duckdns.org:8442";
+const host = process.env.TRIP_SERVICE_URL;
+//"https://tripservice.duckdns.org:8442";
 
 function checkForErrors(response){
     if(!response.ok){
